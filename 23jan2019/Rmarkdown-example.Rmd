@@ -1,0 +1,83 @@
+---
+title: "Code Club: Rmarkdown-example"
+author: "Martin Schobben"
+output: 
+  pdf_document:
+    keep_tex: yes
+#output:   
+#  word_document:
+#    reference_docx: word-style-ref.docx
+header-includes: #allows you to add in your own Latex packages
+- \usepackage{float} #use the 'float' package
+- \floatplacement{figure}{H} #make every figure with caption = h
+---
+
+
+This is an example of R Markdown.
+
+
+## Iris sample dataset
+
+
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, fig.width=4, fig.height=4, fig.pos="H")
+```
+
+
+
+```{r echo=FALSE, message=FALSE, fig.cap="Boxplot of petal width for Iris species"}
+
+
+
+
+library(ggplot2)
+
+ggplot(iris, aes(y=Petal.Width, x=Species))+
+  geom_boxplot()
+
+
+```
+
+
+
+
+```{r fig.cap="pressure"}
+
+
+plot(pressure)
+
+
+
+```
+
+
+
+```{r results='asis'}
+
+
+
+
+library(dplyr)
+
+
+iris.df <- iris %>% group_by(Species) %>% summarise_all(funs(mean))
+
+
+knitr::kable(iris.df) 
+
+```
+
+
+
+
+
+We can also include `r "R code"` in the text.
+
+Or we can report the mean sepal length of the Iris specimens belonging to the clade *Setosa*: `r iris.df[iris.df$Species == "setosa", "Sepal.Length"]`. 
+
+equations: $$E =mc^{2}$$
+
+
+
+
