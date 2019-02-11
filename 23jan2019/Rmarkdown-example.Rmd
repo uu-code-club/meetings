@@ -3,13 +3,13 @@ title: "Code Club: Rmarkdown-example"
 author: "Martin Schobben"
 output: 
   pdf_document:
-    keep_tex: yes
-#output:   
-#  word_document:
-#    reference_docx: word-style-ref.docx
-header-includes: #allows you to add in your own Latex packages
-- \usepackage{float} #use the 'float' package
-- \floatplacement{figure}{H} #make every figure with caption = h
+    keep_tex: yes                             # saving tex file
+#output:                               
+#  word_document:                             # word output
+#    reference_docx: word-style-ref.docx      # reference word file as formatting template
+header-includes:                              # allows you to add in your own Latex packages
+- \usepackage{float}                          # use the 'float' package for fgures
+- \floatplacement{figure}{H}                  # make every figure with caption = h
 ---
 
 
