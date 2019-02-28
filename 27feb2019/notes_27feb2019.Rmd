@@ -1,0 +1,60 @@
+---
+title: "notes_27feb2019"
+author: "Martin Schobben"
+date: "February 27, 2019"
+output: pdf_document
+---
+
+https://www.datacamp.com/courses/data-visualization-with-ggplot2-1?tap_a=5644-dce66f&tap_s=93618-a68c98
+
+https://www.datacamp.com/courses/dplyr-data-manipulation-r-tutorial
+
+http://mazamascience.com/WorkingWithData/?p=1277
+
+package swirl
+
+```{r}
+
+```
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+df <- data.frame(x=c(1:10),y=c(1:10), label=c(rep("A",3),rep("B",7)))
+
+df <- df %>% mutate(label=factor(label, levels = c("A","B"), c(bquote(delta^13*C[carb]~"(\u2030 VPDB)"),bquote(delta^18*O[carb]~"(\u2030 VPDB)"))))
+
+p <- 
+  
+  ggplot(df, aes(x,y, col = label, alpha = label))+
+      geom_point()+
+      facet_grid(cols= vars(label), scales = "free", space = "free")
+      
+
+
+
+
+
+
+```
+
+## Using base plot and saving device
+
+First step open a device, creating the canvas to draw the plot, as 'png' 'pdf' or 'svg' device.  
+
+## using ggplot and saving with ggsave
+
+The benefits of ggplot are that dimensions and positions are fixed.
+
+Ggplots are build layer by layer, and so give a good overview of the 
+
+
+
+
+
+
+
+
+
+
