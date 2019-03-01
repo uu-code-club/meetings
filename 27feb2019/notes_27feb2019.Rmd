@@ -5,76 +5,64 @@ date: "February 27, 2019"
 output: pdf_document
 ---
 
-
-
 ```{r setup, include=FALSE}
-
-
-
 library(Cairo) # package needed to render per mill sign in rmarkdown pdf ouput with option dev='cairoPDF'
 library(swirl)
-
-
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, dev='CairoPDF')
-
 ```
-
 
 ## Using base plot and saving graphics device
 
-The first step involves opening a device, creating the canvas to draw the plot, with the call `png()` `pdf()` or `svg()` as the different devices. Whereafter the call `plot()` can be used to plot `r "R"` objects on the previously opened graphics device. 
+The first step involves opening a device and creating the canvas to draw the plot, with the call `png()` `pdf()` or `svg()` as the different devices. Then the call `plot()` can be used to plot `r "R"` objects on the previously opened graphics device. When you're done adding lines, points, and legends close the device with `dev.off()`.
 
 ## Using ggplot and saving with ggsave
 
-The benefits of ggplot are that dimensions and positions can be better fixed. The ggplot is build layer by layer with a dedicated call for the data sources (as a dataframe) and variable selection (`ggplot`), the visual representation of data (`geom_point(), geom_line() ....`) and formatting of the former layer (`theme()`), and, so give a good overview of the different layers added to a plot. After finalising the plot, you can save it with the call `ggsave`.
+The benefits of ggplot are that dimensions and positions can be better fixed. The ggplot is built layer by layer with a dedicated call for the data sources (as a dataframe/tibble) and variable selection (`ggplot`), the visual representation of data (`geom_point(), geom_line() ....`) and formatting of the former layer (`theme()`), and, so give a good overview of the different layers added to a plot. After finalising the plot, you can save it with the call `ggsave`.
 
 ### Example
 
 For the example we use the following two packages.
 
 ```{r }
-
 library(ggplot2)
 library(dplyr)
-
 ```
 
 We create a dummy y--x data frame with a label for subsetting. By mutating the label with `bquote`, we can introduce mathematical expressions in the facet and legend labels later on.
 
+The syntax for an expression:
+- `~` is a space
+- `*` combines elements without any space between them
+- `delta`, `alpha`, etc. all result in the greek characters
+- `^` puts the rest of the expression in superscript, can also be used with `{` and `}`
+- `[x]` puts x in subscript
+- if you want to print non-greek special characters, such as the permil sign, you have to add the UTF-8 code within a string, preceded by `\u`
+- parentheses look a bit prettier within a string than as part of the expression
+
 ```{r}
 df <- data.frame(x=c(1:10),y=c(1:10), label=c(rep("A",3),rep("B",7)))
-
 df <- df %>% mutate(label=factor(label, levels = c("A","B"), c(bquote(delta^13*C[carb]~"(\u2030 VPDB)"),bquote(delta^18*O[carb]~"(\u2030 VPDB)"))))
-
-
 ```
 
 Here, we create a ggplot with variables as points. We include `df$label` in the aesthetics (`aes`) to subset the variable according to the label by creating different colors (`colour`) for the datapoints.
 
 ```{r}
-p <- ggplot(df, aes(x,y, colour = label))+
+p <- ggplot(df, aes(x,y, colour = label)) +  # note how we save it to p, resulting in an R-object in your session!
       geom_point()
-
 p
-    
 ```
 
 We can make multiple plot panels based on the label (`df$label`) variable in the dataframe `df`. By setting argument `labeller` to `label_parsed`, we generate the previous defined mathematical expressions.  So, let's say when you want to plot stable carbon and oxygen isotope data in delta notation as two different panels.
 
 ```{r}
-
 p <-  p  +  facet_grid(cols= vars(label), scales = "free", space = "free", labeller=label_parsed)
-       
 p
-
 ```
 
 It is also possible to include mathematical expression in the axis title by using `expression`.
 
 ```{r}
-
 p <-  p  + xlab(expression(delta^{13}*C[carb]~"(\u2030 VPDB)"))
-
 p
 ```
 
@@ -82,16 +70,9 @@ Parsing the same expression for the legend text seems more tricky and involves c
 
 ```{r}
 library(scales)
-
 p <-  p  +    scale_colour_discrete(guide = guide_legend(parse = TRUE), labels = parse_format())
-
-
 p
 ```
-
-    
-      
-
 
 ## Some links discussed during the meeting
 
@@ -106,6 +87,3 @@ Spatial data in R: <http://mazamascience.com/WorkingWithData/?p=1277>
 ```{r}
 lapply(list("swirl","ggplot2", "dplyr"), citation)
 ```
-
-
-
