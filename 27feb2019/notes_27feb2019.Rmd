@@ -7,17 +7,28 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 library(Cairo) # package needed to render per mill sign in rmarkdown pdf ouput with option dev='cairoPDF'
+# note: you can also set the encoding of the pdf to "WinAnsi", with the `enc` argument to the device.
 library(swirl)
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, dev='CairoPDF')
 ```
 
 ## Using base plot and saving graphics device
 
-The first step involves opening a device and creating the canvas to draw the plot, with the call `png()` `pdf()` or `svg()` as the different devices. Then the call `plot()` can be used to plot `r "R"` objects on the previously opened graphics device. When you're done adding lines, points, and legends close the device with `dev.off()`.
+The first step involves opening a device and creating the canvas to draw the
+plot, with the call `png()` `pdf()` or `svg()` as the different devices. Then
+the call `plot()` can be used to plot `r "R"` objects on the previously opened
+graphics device. When you're done adding lines, points, and legends close the
+device with `dev.off()`.
 
 ## Using ggplot and saving with ggsave
 
-The benefits of ggplot are that dimensions and positions can be better fixed. The ggplot is built layer by layer with a dedicated call for the data sources (as a dataframe/tibble) and variable selection (`ggplot`), the visual representation of data (`geom_point(), geom_line() ....`) and formatting of the former layer (`theme()`), and, so give a good overview of the different layers added to a plot. After finalising the plot, you can save it with the call `ggsave`.
+The benefits of ggplot are that dimensions and positions can be better fixed.
+The ggplot is built layer by layer with a dedicated call for the data sources
+(as a dataframe/tibble) and variable selection (`ggplot`), the visual
+representation of data (`geom_point(), geom_line() ....`) and formatting of the
+former layer (`theme()`), and, so give a good overview of the different layers
+added to a plot. After finalising the plot, you can save it with the call
+`ggsave`.
 
 ### Example
 
@@ -28,13 +39,17 @@ library(ggplot2)
 library(dplyr)
 ```
 
-We create a dummy y--x data frame with a label for subsetting. By mutating the label with `bquote`, we can introduce mathematical expressions in the facet and legend labels later on.
+We create a dummy y--x data frame with a label for subsetting. By mutating the
+label with `bquote`, we can introduce mathematical expressions in the facet and
+legend labels later on.
 
 The syntax for an expression:
+
 - `~` is a space
 - `*` combines elements without any space between them
 - `delta`, `alpha`, etc. all result in the greek characters
-- `^` puts the rest of the expression in superscript, can also be used with `{` and `}`
+- `^` puts the rest of the expression in superscript, can also be used with `{`
+  and `}`
 - `[x]` puts x in subscript
 - if you want to print non-greek special characters, such as the permil sign, you have to add the UTF-8 code within a string, preceded by `\u`
 - parentheses look a bit prettier within a string than as part of the expression
@@ -44,7 +59,9 @@ df <- data.frame(x=c(1:10),y=c(1:10), label=c(rep("A",3),rep("B",7)))
 df <- df %>% mutate(label=factor(label, levels = c("A","B"), c(bquote(delta^13*C[carb]~"(\u2030 VPDB)"),bquote(delta^18*O[carb]~"(\u2030 VPDB)"))))
 ```
 
-Here, we create a ggplot with variables as points. We include `df$label` in the aesthetics (`aes`) to subset the variable according to the label by creating different colors (`colour`) for the datapoints.
+Here, we create a ggplot with variables as points. We include `df$label` in the
+aesthetics (`aes`) to subset the variable according to the label by creating
+different colors (`colour`) for the datapoints.
 
 ```{r}
 p <- ggplot(df, aes(x,y, colour = label)) +  # note how we save it to p, resulting in an R-object in your session!
@@ -52,21 +69,27 @@ p <- ggplot(df, aes(x,y, colour = label)) +  # note how we save it to p, resulti
 p
 ```
 
-We can make multiple plot panels based on the label (`df$label`) variable in the dataframe `df`. By setting argument `labeller` to `label_parsed`, we generate the previous defined mathematical expressions.  So, let's say when you want to plot stable carbon and oxygen isotope data in delta notation as two different panels.
+We can make multiple plot panels based on the label (`df$label`) variable in
+the dataframe `df`. By setting argument `labeller` to `label_parsed`, we
+generate the previous defined mathematical expressions. So, let's say when you
+want to plot stable carbon and oxygen isotope data in delta notation as two
+different panels.
 
 ```{r}
 p <-  p  +  facet_grid(cols= vars(label), scales = "free", space = "free", labeller=label_parsed)
 p
 ```
 
-It is also possible to include mathematical expression in the axis title by using `expression`.
+It is also possible to include mathematical expression in the axis title by
+using `expression`.
 
 ```{r}
 p <-  p  + xlab(expression(delta^{13}*C[carb]~"(\u2030 VPDB)"))
 p
 ```
 
-Parsing the same expression for the legend text seems more tricky and involves changing two arguments of `scale_colour` and the additional package `scales`.
+Parsing the same expression for the legend text seems more tricky and involves
+changing two arguments of `scale_colour` and the additional package `scales`.
 
 ```{r}
 library(scales)
@@ -76,9 +99,11 @@ p
 
 ## Some links discussed during the meeting
 
-Data visualization course: <https://www.datacamp.com/courses/data-visualization-with-ggplot2-1?tap_a=5644-dce66f&tap_s=93618-a68c98>
+Data visualization course:
+<https://www.datacamp.com/courses/data-visualization-with-ggplot2-1?tap_a=5644-dce66f&tap_s=93618-a68c98>
 
-Data wrangling course: <https://www.datacamp.com/courses/dplyr-data-manipulation-r-tutorial>
+Data wrangling course:
+<https://www.datacamp.com/courses/dplyr-data-manipulation-r-tutorial>
 
 Spatial data in R: <http://mazamascience.com/WorkingWithData/?p=1277>
 
