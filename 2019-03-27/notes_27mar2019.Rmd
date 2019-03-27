@@ -1,8 +1,13 @@
 Present Ilja, Robin, Martin
 
-We discussed for-loops vs vectorisation at length. Ask us for more info if curiious!
+We discussed for-loops vs vectorisation at length. Ask us for more info if curious!
 
-Then we discussed how to do monte-carlo simulation + moving average or loess or
+Basically, it's better not to repeat yourself too often, so that when you
+change a piece of your code you have a smaller chance of forgetting to update
+it somwehere else. If you find yourself copy-pasting something more than 3
+times, it's time to write a function or rethink the problem!
+
+Then we discussed how to do monte-carlo simulations moving average or loess or
 sliding time-window. We'll have to get back to this!
 
 Awesome link with interactive resources on smoothing!
