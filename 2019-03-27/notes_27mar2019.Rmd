@@ -1,0 +1,9 @@
+Present Ilja, Robin, Martin
+
+We discussed for-loops vs vectorisation at length. Ask us for more info if curiious!
+
+Then we discussed how to do monte-carlo simulation + moving average or loess or
+sliding time-window. We'll have to get back to this!
+
+Awesome link with interactive resources on smoothing!
+https://rafalab.github.io/dsbook/smoothing.html
