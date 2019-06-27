@@ -1,0 +1,93 @@
+#+TITLE: Code Club meeting notes
+#+AUTHOR: Ilja J. Kocken and Martin Schobben
+
+We have monthly code club meetings for those interested, mainly focusing on
+using R for data analysis and plotting. We prefer to use packages in the
+[[https://www.tidyverse.org/][tidyverse]] and rely heavily on
+[[https://dplyr.tidyverse.org/][dplyr]] and
+[[https://ggplot2.tidyverse.org/][ggplot2]].
+
+Check out the PDF cheatsheets from RStudio for quick visual reminders of what
+everything does.
+
+The notes to our meetings are available in this repository, sorted by date.
+
+* Future meetings
+We postpone the meetings until the end of the summer holidays and start back up
+in September 2019!
+
+| date           | possible topic                                   | instructor |
+|----------------+--------------------------------------------------+------------|
+| september 2019 | agemodels with uncertainty using clam and rbacon | Thomas     |
+
+* Past meetings
+| date             | topic and packages used                                    | instructor  |
+|------------------+------------------------------------------------------------+-------------|
+| <2019-01-23 Wed> | RMarkdown                                                  | Martin      |
+| <2019-02-27 Wed> | Plotting devices, ggplot fancy labels, faceting            | Martin/Ilja |
+| <2019-03-27 Wed> | for loops, general recommendations, monte-carlo smoothing? | Ilja/Martin |
+| <2019-05-22 Wed> | time series analysis, moving averages, loess, pangaear,    | Martin/Ilja |
+| <2019-06-26 Wed> | agemodels, linear interpolation, plotting, clam, rbacon    | Ilja        |
+
+* Installing R and RStudio
+Download and install the latest version of R from
+[[https://cran.r-project.org/]]. Note that on MacOS you need to install some
+extra stuff, so follow the install guide for MacOS (previous link) and don't
+forget to install [[http://xquartz.macosforge.org/][XQuartz]].
+
+RStudio is probably the easiest and most convenient integrated desktop
+environment (IDE) for R, so next,
+[[https://www.rstudio.com/products/rstudio/download/][download and install
+RStudio]].
+
+* Resources for learning
+If you're a beginner, it's probably fastest to learn the basics of R by
+yourself! We recommend using interactive courses or packages over books,
+because the exercises make you obtain the new skills much faster!
+
+Once you have installed R and RStudio, don't get tempted into clicking
+everywhere with the mouse! R is a programming language, speak to it with the
+keyboard! Go to the command prompt, bottom left thingie that starts with ~>~
+(shortcut key ~ctrl~ + ~1~), and type! Now of course you don't want to type
+everything over every time, so you write a script in the topleft part (~ctrl~ +
+~2~) and send bits of it to the command prompt.
+
+To get started, you can try to use this nice interactive package. Go to the
+command prompt and type the following, each line followed by ~return~. Then
+type in the answers to the questions it asks and go through a few of the
+exercises if you want.
+
+
+#+begin_src R
+install.packages("swirl")
+library("swirl")
+swirl()
+#+end_src
+
+Here you've installed your first ~package~. Packages are the bread and butter
+of R, why write code if somebody else has already done the hard work for you?
+We strongly recommend using all of the R-packages in the
+[[https://www.tidyverse.org/][tidyverse]], such as ~readr~ and ~readxl~ for
+reading in data, ~dplyr~ for data manipulation and ~ggplot2~ for plotting.
+
+Then take some of the nice online courses, for which you don't need R on your
+computer. You can do everything in the browser!
+
+This [[https://www.datacamp.com/courses/free-introduction-to-r][datacamp
+introduction course]] is a great start. This
+[[https://www.datacamp.com/courses/data-visualization-with-ggplot2-1][datacamp
+visualisation with ggplot2]] is a great place to learn about the grammar of
+graphics.
+
+If you prefer books, try out the nice free introductory book
+[[https://r4ds.had.co.nz/][R for data science]]. When you've progressed a bit,
+the book [[https://adv-r.hadley.nz/][Advanced R]] is a great resource for
+learning more.
+
+If you want to take a 1-day interactive course, the UU library provides one.
+It's pretty much always full so sign up early. All of their resources are
+[[https://github.com/UtrechtUniversity/workshop-introduction-to-R-and-data][available
+online]].
+
+We've recently shifted the aims of our code club to be more beginner-friendly,
+so please don't hesitate to show up!
