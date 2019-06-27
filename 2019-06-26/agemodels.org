@@ -85,7 +85,7 @@ use emacs' org-mode in stead of RMarkdown. But for now, I'll also show ~read_csv
 #+END_SRC
 
 #+RESULTS: loaddata
-[[file:agemodel.png]]
+[[agemodel.png]]
 
 * samples
 Now let's say we have some samples (subset) from some depths, I've just taken
@@ -275,7 +275,7 @@ dealing with time and date stamps.
 #+end_src
 
 #+RESULTS:
-[[file:measurements.png]]
+[[measurements.png]]
 
 This is nice, because it allows for very fast data exploration. It works best, however, if all the measurements have the same unit. I.e. if you facet by species in a pollen plot, you can easily tweak the size and spacing of each facet with the
 #+begin_src R
