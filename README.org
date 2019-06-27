@@ -1,16 +1,17 @@
 #+TITLE: Code Club meeting notes
 #+AUTHOR: Ilja J. Kocken and Martin Schobben
 
-We have monthly code club meetings for those interested, mainly focusing on
-using R for data analysis and plotting. We prefer to use packages in the
-[[https://www.tidyverse.org/][tidyverse]] and rely heavily on
-[[https://dplyr.tidyverse.org/][dplyr]] and
-[[https://ggplot2.tidyverse.org/][ggplot2]].
+Contact code club hosts: [[https://www.uu.nl/staff/MANSchobben&t=0][Martin
+Schobben]] and [[https://www.uu.nl/staff/IJKocken][Ilja Kocken]].
 
-Check out the PDF cheatsheets from RStudio for quick visual reminders of what
-everything does.
+At our department of Earth Sciences, we have introduced monthly code club
+meetings for those interested, mainly focusing on using R for data analysis and
+plotting.
 
 The notes to our meetings are available in this repository, sorted by date.
+
+We've recently shifted the aims of our code club to be more beginner-friendly,
+so please don't hesitate to show up!
 
 * Future meetings
 We postpone the meetings until the end of the summer holidays and start back up
@@ -74,6 +75,8 @@ of R, why write code if somebody else has already done the hard work for you?
 We strongly recommend using all of the R-packages in the
 [[https://www.tidyverse.org/][tidyverse]], such as ~readr~ and ~readxl~ for
 reading in data, ~dplyr~ for data manipulation and ~ggplot2~ for plotting.
+Check out the PDF cheatsheets from RStudio for quick visual reminders of what
+everything does.
 
 Then take some of the nice online courses, for which you don't need R on your
 computer. You can do everything in the browser! This
@@ -92,6 +95,3 @@ If you want to take a 1-day interactive course, the UU library provides one.
 It's pretty much always full so sign up early. All of their resources are
 [[https://github.com/UtrechtUniversity/workshop-introduction-to-R-and-data][available
 online]].
-
-We've recently shifted the aims of our code club to be more beginner-friendly,
-so please don't hesitate to show up!
