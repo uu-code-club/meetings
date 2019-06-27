@@ -4,10 +4,12 @@
 #+AUTHOR: Ilja J. Kocken
 
 Today we're going to apply a stratigraphic age-model to convert our core's
-depth to age. This time I, [[https://www.uu.nl/staff/IJKocken][Ilja Kocken]], am presenting, and since I don't use
-RStudio I give you the [[emacs][emacs]] [[https://orgmode.org/][org-mode]] source code for this analysis. If you're
-interested in what's happening, check out the raw button on the top-right in
-github to see the text file that creates this fancy thingie.
+depth to age. This time I, [[https://www.uu.nl/staff/IJKocken][Ilja Kocken]],
+am presenting, and since I don't use RStudio I give you the [[emacs][emacs]]
+[[https://orgmode.org/][org-mode]] source code for this analysis. If you're
+interested in what's happening, check out the
+[[https://github.com/uu-code-club/meetings/raw/master/2019-06-26/README.org][raw
+README.org]] to see the text file that creates this fancy thingie.
 
 Don't worry though, it's very similar to RMarkdown and you should be able to
 follow along just fine!
