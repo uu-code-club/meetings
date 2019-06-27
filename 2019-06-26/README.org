@@ -59,7 +59,13 @@ use emacs' org-mode in stead of RMarkdown. But for now, I'll also show ~read_csv
   library(dplyr)    # for data manipulation
   library(readr)    # for reading in csv files in the tidyverse
 
-  agemodel <- read_csv("agemodel.csv")
+  ## read in the local csv copy
+  ## agemodel <- read_csv("agemodel.csv")
+
+  ## note that if you want to follow along, you can also use the online file
+  ## without having to download it first
+  agemodel <- read_csv("https://github.com/uu-code-club/meetings/raw/master/2019-06-26/agemodel.csv")
+
   agemodel %>%  # the pipe %>% operator passes the left hand side to the right
                 # hand side as a first argument. So in this case it's similar to
                 # calling ggplot(agemodel, ...)
@@ -133,7 +139,8 @@ function from base R.
 # again, use #+BEGIN_SRC R :var smps=samples to use read.csv in org.
 #+NAME: approx
 #+BEGIN_SRC R
-  smps <- read_csv("samples.csv")
+  ## smps <- read_csv("samples.csv")  # local, see below for online
+  smps <- read_csv("https://github.com/uu-code-club/meetings/raw/master/2019-06-26/samples.csv")
 
   aged_smps <- smps %>%
     ## simplify the tibble by removing some columns (not necessary, but nicer for printing)
@@ -232,7 +239,8 @@ left side, look for the column's label (should have the same name in both
 tibbles) in the right hand side and bind them together accordingly.
 # #+begin_src R :var meas=measurements
 #+begin_src R
-  meas <- read_csv("data.csv")
+  ## meas <- read_csv("data.csv")
+  meas <- read_csv("https://github.com/uu-code-club/meetings/raw/master/2019-06-26/data.csv")
 
   meas_info <- meas %>%
     left_join(aged_smps, by="label")
