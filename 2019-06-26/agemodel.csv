@@ -1,0 +1,19 @@
+Datum tie point,Datum,Datum type,Zone,Age (Ma),Midpoint depth (mbsf),Distance (m),Duration (Ma),LSR (cm/k.y.),Notes
+D01,T Pseudoemiliania lacunosa,Calcareous nannofossil,NN20,0.44,0.89,0.89,0.44,,Average rate = 1.27 cm/k.y.
+D02,C1n (Brunhes)/C1r.1r (Matuyama),Chron boundary,,0.78,7.75,6.86,0.34,2.02,Average rate = 1.27 cm/k.y.
+D03,C1r.2n (Cobb Mountain)/C1r.3r,Chron boundary,,1.19,10.37,2.62,0.40,0.66,Average rate = 1.27 cm/k.y.
+D04,T Triquetrorhabdulus carinatus,Calcareous nannofossil,NN3,18.28,18.00,8.44,17.10,0.05,Average rate = 0.06 cm/k.y.
+D05,C8n.2n/C8r,Chron boundary,,25.99,25.91,7.11,7.71,0.09,Average rate = 0.06 cm/k.y.
+D06,C8r/C9n,Chron boundary,,26.42,32.13,6.22,0.43,1.45,Average rate = 1.96 cm/k.y.
+D07,C9n/C9r,Chron boundary,,27.44,54.41,22.28,1.02,2.18,Average rate = 1.96 cm/k.y.
+D08,C10n.2n/C10r,Chron boundary,,28.28,65.41,11.00,0.84,1.31,Average rate = 1.11 cm/k.y.
+D09,C11n.2n/C11r,Chron boundary,,29.97,82.59,17.19,1.69,1.02,Average rate = 1.11 cm/k.y.
+D10,T Turborotalia ampliapertura,Planktonic foraminifer,O3/O2,30.28,91.42,8.83,0.31,2.85,2.85
+D11,Inferred hiatus,"Decreed (KoT, 28-07-12)",,31.00,91.42,0.00,0.72,0.00,Hiatus
+D12,T Isthmolithus recurvus,Calcareous nannofossil,,32.49,103.74,12.32,1.49,0.83,0.83
+D13,C12r/C13n,Chron boundary,,33.16,128.79,25.05,0.67,3.74,Average rate = 2.74 cm/k.y.
+D14,C13n/C13r,Chron boundary,,33.71,144.15,15.36,0.55,2.79,Average rate = 2.74 cm/k.y.
+D15,T Turborotalia cerroazulensis,Planktonic foraminifer,Within E16,34.03,160.46,16.31,0.33,4.94,Average rate = 2.74 cm/k.y.
+D16,C13r/C15n,Chron boundary,,35.00,172.98,12.52,0.97,1.29,Average rate = 2.74 cm/k.y.
+D17,T Globigerinatheka semiinvoluta,Planktonic foraminifer,E15/E14,36.18,208.90,35.92,1.18,3.04,Average rate = 2.74 cm/k.y.
+D18,T Chiasmolithus grandis,Calcareous nannofossil,,37.98,253.15,45.11,1.80,2.51,Average rate = 2.74 cm/k.y.

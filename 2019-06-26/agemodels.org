@@ -1,0 +1,312 @@
+#+TITLE: Code Club meeting
+#+PROPERTY: header-args:R :session *R:codeclub* :colnames yes
+#+OPTIONS: ^:{}
+#+AUTHOR: Ilja J. Kocken
+
+Today we're going to apply a stratigraphic age-model to convert our core's
+depth to age. This time I, [[https://www.uu.nl/staff/IJKocken][Ilja Kocken]], am presenting, and since I don't use
+RStudio I give you the [[emacs][emacs]] [[https://orgmode.org/][org-mode]] source code for this analysis. If you're
+interested in what's happening, check out the raw button on the top-right in
+github to see the text file that creates this fancy thingie.
+
+Don't worry though, it's very similar to RMarkdown and you should be able to
+follow along just fine!
+
+* age model
+We have an [[http://publications.iodp.org/proceedings/342/112/112_t13.htm][age model]] for my site!
+
+I copied it over below in my org-format, but you can also save it as a csv
+(=agemodel.csv=) or tab separated text file.
+
+#+tblname: tie-points
+| Datum tie point | Datum                           | Datum type              | Zone       | Age (Ma) | Midpoint depth (mbsf) | Distance (m) | Duration (Ma) | LSR (cm/k.y.) | Notes                       |
+|-----------------+---------------------------------+-------------------------+------------+----------+-----------------------+--------------+---------------+---------------+-----------------------------|
+| D01             | T Pseudoemiliania lacunosa      | Calcareous nannofossil  | NN20       |     0.44 |                  0.89 |         0.89 |          0.44 |               | Average rate = 1.27 cm/k.y. |
+| D02             | C1n (Brunhes)/C1r.1r (Matuyama) | Chron boundary          |            |     0.78 |                  7.75 |         6.86 |          0.34 |          2.02 | Average rate = 1.27 cm/k.y. |
+| D03             | C1r.2n (Cobb Mountain)/C1r.3r   | Chron boundary          |            |     1.19 |                 10.37 |         2.62 |          0.40 |          0.66 | Average rate = 1.27 cm/k.y. |
+| D04             | T Triquetrorhabdulus carinatus  | Calcareous nannofossil  | NN3        |    18.28 |                 18.00 |         8.44 |         17.10 |          0.05 | Average rate = 0.06 cm/k.y. |
+| D05             | C8n.2n/C8r                      | Chron boundary          |            |    25.99 |                 25.91 |         7.11 |          7.71 |          0.09 | Average rate = 0.06 cm/k.y. |
+| D06             | C8r/C9n                         | Chron boundary          |            |    26.42 |                 32.13 |         6.22 |          0.43 |          1.45 | Average rate = 1.96 cm/k.y. |
+| D07             | C9n/C9r                         | Chron boundary          |            |    27.44 |                 54.41 |        22.28 |          1.02 |          2.18 | Average rate = 1.96 cm/k.y. |
+| D08             | C10n.2n/C10r                    | Chron boundary          |            |    28.28 |                 65.41 |        11.00 |          0.84 |          1.31 | Average rate = 1.11 cm/k.y. |
+| D09             | C11n.2n/C11r                    | Chron boundary          |            |    29.97 |                 82.59 |        17.19 |          1.69 |          1.02 | Average rate = 1.11 cm/k.y. |
+| D10             | T Turborotalia ampliapertura    | Planktonic foraminifer  | O3/O2      |    30.28 |                 91.42 |         8.83 |          0.31 |          2.85 | 2.85                        |
+| D11             | Inferred hiatus                 | Decreed (KoT, 28-07-12) |            |    31.00 |                 91.42 |         0.00 |          0.72 |          0.00 | Hiatus                      |
+| D12             | T Isthmolithus recurvus         | Calcareous nannofossil  |            |    32.49 |                103.74 |        12.32 |          1.49 |          0.83 | 0.83                        |
+| D13             | C12r/C13n                       | Chron boundary          |            |    33.16 |                128.79 |        25.05 |          0.67 |          3.74 | Average rate = 2.74 cm/k.y. |
+| D14             | C13n/C13r                       | Chron boundary          |            |    33.71 |                144.15 |        15.36 |          0.55 |          2.79 | Average rate = 2.74 cm/k.y. |
+| D15             | T Turborotalia cerroazulensis   | Planktonic foraminifer  | Within E16 |    34.03 |                160.46 |        16.31 |          0.33 |          4.94 | Average rate = 2.74 cm/k.y. |
+| D16             | C13r/C15n                       | Chron boundary          |            |    35.00 |                172.98 |        12.52 |          0.97 |          1.29 | Average rate = 2.74 cm/k.y. |
+| D17             | T Globigerinatheka semiinvoluta | Planktonic foraminifer  | E15/E14    |    36.18 |                208.90 |        35.92 |          1.18 |          3.04 | Average rate = 2.74 cm/k.y. |
+| D18             | T Chiasmolithus grandis         | Calcareous nannofossil  |            |    37.98 |                253.15 |        45.11 |          1.80 |          2.51 | Average rate = 2.74 cm/k.y. |
+
+* plot the age model
+I'm going to excessively comment the next section. Don't do this in your own
+code, however! Normally it's best to comment only on *why* you do things, not
+*what* they are doing---in the future you'll be able to read the code anyhow, and
+when you change the code your comments might become out of date.
+
+Note that if you're using org-mode you can also read in org-tables directly by
+specifying them as a variable: add ~:var agemodel=tie-points~ to the header! This
+uses base's read.csv, so the column names will substitute spaces and
+parentheses with =.='s. See the "raw" version of this code on github to see how I
+use emacs' org-mode in stead of RMarkdown. But for now, I'll also show ~read_csv~.
+
+#+NAME: loaddata
+#+BEGIN_SRC R :output both :results output graphics :file agemodel.png :width 700 :height 600
+  ## load the libraries
+  library(ggplot2)  # for plotting
+  library(dplyr)    # for data manipulation
+  library(readr)    # for reading in csv files in the tidyverse
+
+  agemodel <- read_csv("agemodel.csv")
+  agemodel %>%  # the pipe %>% operator passes the left hand side to the right
+                # hand side as a first argument. So in this case it's similar to
+                # calling ggplot(agemodel, ...)
+    ggplot(aes(x = `Age (Ma)`, y = `Midpoint depth (mbsf)`,
+               colour = `Datum type`, label = Datum)) +
+                # note the backtick ` arround the parameter names. This is needed
+                # because the column names have parentheses and spaces. Normally
+                # it's easier to rename your columns to letters and underscores.
+                # (e.g. age_ma, depth_mbsf).
+      scale_y_reverse() +  # we plot deeper in the core further down
+      ## we zoom in on the x- and y-axes. You can also do this with ylim() and
+      ## xlim() but this is not recommended, since it actually cuts off the
+      ## values that are outside the range. This means lines that go beyond the
+      ## zoom range are clipped off.
+      coord_cartesian(xlim = c(0, 51), ylim = c(-10, 250)) +
+      ## next, we overrule the colour aesthetic (use col, color, or colour) so
+      ## that the line is drawn through all the stratigraphic tie-point types.
+      geom_line(aes(colour = NULL)) +
+      ## we add the datum labels, left-justified and at a 15 degree angle
+      geom_text(hjust = 0, angle = 15) +
+      ## and draw the points
+      geom_point()
+#+END_SRC
+
+#+RESULTS: loaddata
+[[file:agemodel.png]]
+
+* samples
+Now let's say we have some samples (subset) from some depths, I've just taken
+some example rows of the file that the IODP database gives you.
+
+#+tblname: samples
+| EXPEDITION | SITE | HOLE | CORE | CORE_TYPE | SECTION | CC | TOP_DEPTH | BOTTOM_DEPTH | VOLUME | MBSF_TOP | MCD_TOP | HALF | ANALYST | LOCATION | REQUEST    | REQUEST_PART | TYPE | SAMPLE_DATE           |  SAMPLE | IGSN            | REMARKS | SUBSAMPLES | code | smp | no | label   |
+|------------+------+------+------+-----------+---------+----+-----------+--------------+--------+----------+---------+------+---------+----------+------------+--------------+------+-----------------------+---------+-----------------+---------+------------+------+-----+----+---------|
+|        342 | 1411 | C    |    4 | H         |       7 | no |        61 |           63 |     10 |   109.62 |  115.97 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/27/2018 12:00:00 AM | 5078833 | IBCR0342RXPUU04 |         |          0 | IK   |   1 |  1 | IK1-001 |
+|        342 | 1411 | C    |    4 | H         |       7 | no |        63 |           65 |     10 |   109.64 |  115.99 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/27/2018 12:00:00 AM | 5078834 | IBCR0342RXQUU04 |         |          0 | IK   |   1 |  2 | IK1-002 |
+|        342 | 1411 | C    |    5 | H         |       1 | no |        60 |           62 |     10 |    110.1 |   118.2 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/27/2018 12:00:00 AM | 5078835 | IBCR0342RXRUU04 |         |          0 | IK   |   1 |  3 | IK1-003 |
+|        342 | 1411 | C    |    5 | H         |       1 | no |        62 |           64 |     10 |   110.12 |  118.22 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/27/2018 12:00:00 AM | 5078836 | IBCR0342RXSUU04 |         |          0 | IK   |   1 |  4 | IK1-004 |
+|        342 | 1411 | C    |    5 | H         |       1 | no |        64 |           66 |     10 |   110.14 |  118.24 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/27/2018 12:00:00 AM | 5078837 | IBCR0342RXTUU04 |         |          0 | IK   |   1 |  5 | IK1-005 |
+|        342 | 1411 | C    |    5 | H         |       1 | no |        66 |           68 |     10 |   110.16 |  118.26 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/27/2018 12:00:00 AM | 5078838 | IBCR0342RXUUU04 |         |          0 | IK   |   1 |  6 | IK1-006 |
+|        342 | 1411 | C    |    5 | H         |       1 | no |        68 |           70 |     10 |   110.18 |  118.28 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/27/2018 12:00:00 AM | 5078839 | IBCR0342RXVUU04 |         |          0 | IK   |   1 |  7 | IK1-007 |
+|        342 | 1411 | B    |   16 | H         |       5 | no |       106 |          108 |     10 |   140.66 |  147.46 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5078973 | IBCR0342RXLYU04 |         |          0 | IK   |   2 | 26 | IK2-026 |
+|        342 | 1411 | B    |   16 | H         |       5 | no |       108 |          110 |     10 |   140.68 |  147.48 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5078974 | IBCR0342RXMYU04 |         |          0 | IK   |   2 | 27 | IK2-027 |
+|        342 | 1411 | B    |   16 | H         |       5 | no |       110 |          112 |     10 |    140.7 |   147.5 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5078975 | IBCR0342RXNYU04 |         |          0 | IK   |   2 | 28 | IK2-028 |
+|        342 | 1411 | B    |   16 | H         |       5 | no |       112 |          114 |     10 |   140.72 |  147.52 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5078976 | IBCR0342RXOYU04 |         |          0 | IK   |   2 | 29 | IK2-029 |
+|        342 | 1411 | B    |   16 | H         |       5 | no |       114 |          116 |     10 |   140.74 |  147.54 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5078977 | IBCR0342RXPYU04 |         |          0 | IK   |   2 | 30 | IK2-030 |
+|        342 | 1411 | B    |   16 | H         |       5 | no |       116 |          118 |     10 |   140.76 |  147.56 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5078978 | IBCR0342RXQYU04 |         |          0 | IK   |   2 | 31 | IK2-031 |
+|        342 | 1411 | C    |    9 | H         |       1 | no |        92 |           94 |     10 |   145.42 |  155.62 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079009 | IBCR0342RXLZU04 |         |          0 | IK   |   3 | 17 | IK3-017 |
+|        342 | 1411 | C    |    9 | H         |       1 | no |        94 |           96 |     10 |   145.44 |  155.64 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079010 | IBCR0342RXMZU04 |         |          0 | IK   |   3 | 18 | IK3-018 |
+|        342 | 1411 | C    |    9 | H         |       1 | no |        96 |           98 |     10 |   145.46 |  155.66 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079011 | IBCR0342RXNZU04 |         |          0 | IK   |   3 | 19 | IK3-019 |
+|        342 | 1411 | C    |    9 | H         |       1 | no |        98 |          100 |     10 |   145.48 |  155.68 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079012 | IBCR0342RXOZU04 |         |          0 | IK   |   3 | 20 | IK3-020 |
+|        342 | 1411 | C    |    9 | H         |       1 | no |       100 |          102 |     10 |    145.5 |   155.7 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079013 | IBCR0342RXPZU04 |         |          0 | IK   |   3 | 21 | IK3-021 |
+|        342 | 1411 | C    |    9 | H         |       1 | no |       102 |          104 |     10 |   145.52 |  155.72 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079014 | IBCR0342RXQZU04 |         |          0 | IK   |   3 | 22 | IK3-022 |
+|        342 | 1411 | C    |    9 | H         |       1 | no |       104 |          106 |     10 |   145.54 |  155.74 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079015 | IBCR0342RXRZU04 |         |          0 | IK   |   3 | 23 | IK3-023 |
+|        342 | 1411 | C    |    9 | H         |       1 | no |       106 |          108 |     10 |   145.56 |  155.76 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079016 | IBCR0342RXSZU04 |         |          0 | IK   |   3 | 24 | IK3-024 |
+|        342 | 1411 | C    |    9 | H         |       1 | no |       108 |          110 |     10 |   145.58 |  155.78 | W    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079017 | IBCR0342RXTZU04 |         |          0 | IK   |   3 | 25 | IK3-025 |
+|        342 | 1411 | B    |   20 | H         |       2 | no |        14 |           16 |     10 |   173.24 |  191.84 | A    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079105 | IBCR0342RX92V04 |         |          0 | IK   |   4 | 40 | IK4-040 |
+|        342 | 1411 | B    |   20 | H         |       2 | no |        16 |           18 |     10 |   173.26 |  191.86 | A    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079106 | IBCR0342RXA2V04 |         |          0 | IK   |   4 | 41 | IK4-041 |
+|        342 | 1411 | B    |   20 | H         |       2 | no |        18 |           20 |     10 |   173.28 |  191.88 | A    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079107 | IBCR0342RXB2V04 |         |          0 | IK   |   4 | 42 | IK4-042 |
+|        342 | 1411 | B    |   20 | H         |       2 | no |        20 |           22 |     10 |    173.3 |   191.9 | A    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079108 | IBCR0342RXC2V04 |         |          0 | IK   |   4 | 43 | IK4-043 |
+|        342 | 1411 | B    |   20 | H         |       2 | no |        22 |           24 |     10 |   173.32 |  191.92 | A    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079109 | IBCR0342RXD2V04 |         |          0 | IK   |   4 | 44 | IK4-044 |
+|        342 | 1411 | B    |   20 | H         |       2 | no |        24 |           26 |     10 |   173.34 |  191.94 | A    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079110 | IBCR0342RXE2V04 |         |          0 | IK   |   4 | 45 | IK4-045 |
+|        342 | 1411 | B    |   20 | H         |       2 | no |        26 |           28 |     10 |   173.36 |  191.96 | A    | AW      | BCR      | 059822IODP | A            | ---  | 3/28/2018 12:00:00 AM | 5079111 | IBCR0342RXF2V04 |         |          0 | IK   |   4 | 46 | IK4-046 |
+
+* apply age model
+Let's apply the age model with piecewise linear interpolation, using the ~approx~
+function from base R.
+
+# again, use #+BEGIN_SRC R :var smps=samples to use read.csv in org.
+#+NAME: approx
+#+BEGIN_SRC R
+  smps <- read_csv("samples.csv")
+
+  aged_smps <- smps %>%
+    ## simplify the tibble by removing some columns (not necessary, but nicer for printing)
+    select(HOLE, CORE, CORE_TYPE, SECTION, CC, TOP_DEPTH, BOTTOM_DEPTH, VOLUME, MBSF_TOP, MCD_TOP, label) %>%
+    ## add a new column
+    mutate(age=with(agemodel, # this makes the column names of agemodel available
+                              # to everything in parentheses.
+                    approx(`Midpoint depth (mbsf)`, `Age (Ma)`,
+                           ## xout specifies the new depth values that we want to
+                           ## interpolate to.
+                           xout=smps$MCD_TOP))$y)  # we need to subset only y,
+                                                   # the new age, from the
+                                                   # resulting list
+#+END_SRC
+
+#+RESULTS: approx
+| HOLE | CORE | CORE_TYPE | SECTION | CC | TOP_DEPTH | BOTTOM_DEPTH | VOLUME | MBSF_TOP | MCD_TOP | label   |              age |
+|------+------+-----------+---------+----+-----------+--------------+--------+----------+---------+---------+------------------|
+| C    |    4 | H         |       7 | no |        61 |           63 |     10 |   109.62 |  115.97 | IK1-001 | 32.8171097804391 |
+| C    |    4 | H         |       7 | no |        63 |           65 |     10 |   109.64 |  115.99 | IK1-002 | 32.8176447105788 |
+| C    |    5 | H         |       1 | no |        60 |           62 |     10 |    110.1 |   118.2 | IK1-003 |  32.876754491018 |
+| C    |    5 | H         |       1 | no |        62 |           64 |     10 |   110.12 |  118.22 | IK1-004 | 32.8772894211577 |
+| C    |    5 | H         |       1 | no |        64 |           66 |     10 |   110.14 |  118.24 | IK1-005 | 32.8778243512974 |
+| C    |    5 | H         |       1 | no |        66 |           68 |     10 |   110.16 |  118.26 | IK1-006 | 32.8783592814371 |
+| C    |    5 | H         |       1 | no |        68 |           70 |     10 |   110.18 |  118.28 | IK1-007 | 32.8788942115768 |
+| B    |   16 | H         |       5 | no |       106 |          108 |     10 |   140.66 |  147.46 | IK2-026 | 33.7749417535254 |
+| B    |   16 | H         |       5 | no |       108 |          110 |     10 |   140.68 |  147.48 | IK2-027 | 33.7753341508277 |
+| B    |   16 | H         |       5 | no |       110 |          112 |     10 |    140.7 |   147.5 | IK2-028 |   33.77572654813 |
+| B    |   16 | H         |       5 | no |       112 |          114 |     10 |   140.72 |  147.52 | IK2-029 | 33.7761189454323 |
+| B    |   16 | H         |       5 | no |       114 |          116 |     10 |   140.74 |  147.54 | IK2-030 | 33.7765113427345 |
+| B    |   16 | H         |       5 | no |       116 |          118 |     10 |   140.76 |  147.56 | IK2-031 | 33.7769037400368 |
+| C    |    9 | H         |       1 | no |        92 |           94 |     10 |   145.42 |  155.62 | IK3-017 |  33.935039852851 |
+| C    |    9 | H         |       1 | no |        94 |           96 |     10 |   145.44 |  155.64 | IK3-018 | 33.9354322501533 |
+| C    |    9 | H         |       1 | no |        96 |           98 |     10 |   145.46 |  155.66 | IK3-019 | 33.9358246474555 |
+| C    |    9 | H         |       1 | no |        98 |          100 |     10 |   145.48 |  155.68 | IK3-020 | 33.9362170447578 |
+| C    |    9 | H         |       1 | no |       100 |          102 |     10 |    145.5 |   155.7 | IK3-021 | 33.9366094420601 |
+| C    |    9 | H         |       1 | no |       102 |          104 |     10 |   145.52 |  155.72 | IK3-022 | 33.9370018393624 |
+| C    |    9 | H         |       1 | no |       104 |          106 |     10 |   145.54 |  155.74 | IK3-023 | 33.9373942366646 |
+| C    |    9 | H         |       1 | no |       106 |          108 |     10 |   145.56 |  155.76 | IK3-024 | 33.9377866339669 |
+| C    |    9 | H         |       1 | no |       108 |          110 |     10 |   145.58 |  155.78 | IK3-025 | 33.9381790312692 |
+| B    |   20 | H         |       2 | no |        14 |           16 |     10 |   173.24 |  191.84 | IK4-040 |  35.619565701559 |
+| B    |   20 | H         |       2 | no |        16 |           18 |     10 |   173.26 |  191.86 | IK4-041 | 35.6202227171492 |
+| B    |   20 | H         |       2 | no |        18 |           20 |     10 |   173.28 |  191.88 | IK4-042 | 35.6208797327394 |
+| B    |   20 | H         |       2 | no |        20 |           22 |     10 |    173.3 |   191.9 | IK4-043 | 35.6215367483296 |
+| B    |   20 | H         |       2 | no |        22 |           24 |     10 |   173.32 |  191.92 | IK4-044 | 35.6221937639198 |
+| B    |   20 | H         |       2 | no |        24 |           26 |     10 |   173.34 |  191.94 | IK4-045 |   35.62285077951 |
+| B    |   20 | H         |       2 | no |        26 |           28 |     10 |   173.36 |  191.96 | IK4-046 | 35.6235077951002 |
+
+* age model function
+We can also define a function first, for later use in plotting:
+
+#+BEGIN_SRC R :results output
+  agemodel_function <- with(agemodel, approxfun(`Midpoint depth (mbsf)`, `Age (Ma)`))
+  agemodel_function
+#+END_SRC
+
+#+RESULTS:
+: Warning message:
+: In regularize.values(x, y, ties, missing(ties)) :
+:   collapsing to unique 'x' values
+:
+: function (v)
+: .approxfun(x, y, v, method, yleft, yright, f)
+: <bytecode: 0x561f08cd7420>
+: <environment: 0x561f08cd6b28>
+
+This highlights that there are some overlapping x values. We'll talk about dealing with those in a future session, see also [[*More advanced age model analysis][More advanced age model analysis]].
+
+* combine measurements with sample info
+You have some measurements or new data that you don't want to enter into your
+massive file, because then you'd have to find the correct line each time.
+
+The below table is in the ~tidy~ format. This means that each observation gets
+one row.
+
+#+tblname: measurements
+| label   | measure | value | date             |
+|---------+---------+-------+------------------|
+| IK1-002 | d18O    |   -.2 | <2019-06-26 Wed> |
+| IK1-002 | d13C    |     1 | <2019-06-25 Tue> |
+| IK1-002 | D47     |  0.78 | <2019-06-26 Wed> |
+| IK2-030 | d18O    |    .5 | <2019-06-28 Fri> |
+| IK2-030 | d13C    |    -1 | <2019-06-29 Sat> |
+| IK2-030 | D47     |    .7 | <2019-06-28 Fri> |
+| IK3-025 | d18O    |   -.1 | <2019-05-15 Wed> |
+| IK3-025 | d13C    |    .3 | <2019-05-15 Wed> |
+| IK3-025 | D47     |    .9 | <2019-05-16 Thu> |
+| IK4-044 | d18O    |    .1 | <2019-05-28 Tue> |
+| IK4-044 | d13C    |    .3 | <2019-05-15 Wed> |
+| IK4-044 | D47     |    .6 | <2019-05-22 Wed> |
+
+Now how do we add all the info to it?
+
+We ~left_join~ them together, which means that it'll take all the rows in the
+left side, look for the column's label (should have the same name in both
+tibbles) in the right hand side and bind them together accordingly.
+# #+begin_src R :var meas=measurements
+#+begin_src R
+  meas <- read_csv("data.csv")
+
+  meas_info <- meas %>%
+    left_join(aged_smps, by="label")
+#+end_src
+
+#+RESULTS:
+| label   | measure | value | date             | HOLE | CORE | CORE_TYPE | SECTION | CC | TOP_DEPTH | BOTTOM_DEPTH | VOLUME | MBSF_TOP | MCD_TOP |              age |
+|---------+---------+-------+------------------+------+------+-----------+---------+----+-----------+--------------+--------+----------+---------+------------------|
+| IK1-002 | d18O    |  -0.2 | <2019-06-26 Wed> | C    |    4 | H         |       7 | no |        63 |           65 |     10 |   109.64 |  115.99 | 32.8176447105788 |
+| IK1-002 | d13C    |     1 | <2019-06-25 Tue> | C    |    4 | H         |       7 | no |        63 |           65 |     10 |   109.64 |  115.99 | 32.8176447105788 |
+| IK1-002 | D47     |  0.78 | <2019-06-26 Wed> | C    |    4 | H         |       7 | no |        63 |           65 |     10 |   109.64 |  115.99 | 32.8176447105788 |
+| IK2-030 | d18O    |   0.5 | <2019-06-28 Fri> | B    |   16 | H         |       5 | no |       114 |          116 |     10 |   140.74 |  147.54 | 33.7765113427345 |
+| IK2-030 | d13C    |    -1 | <2019-06-29 Sat> | B    |   16 | H         |       5 | no |       114 |          116 |     10 |   140.74 |  147.54 | 33.7765113427345 |
+| IK2-030 | D47     |   0.7 | <2019-06-28 Fri> | B    |   16 | H         |       5 | no |       114 |          116 |     10 |   140.74 |  147.54 | 33.7765113427345 |
+| IK3-025 | d18O    |  -0.1 | <2019-05-15 Wed> | C    |    9 | H         |       1 | no |       108 |          110 |     10 |   145.58 |  155.78 | 33.9381790312692 |
+| IK3-025 | d13C    |   0.3 | <2019-05-15 Wed> | C    |    9 | H         |       1 | no |       108 |          110 |     10 |   145.58 |  155.78 | 33.9381790312692 |
+| IK3-025 | D47     |   0.9 | <2019-05-16 Thu> | C    |    9 | H         |       1 | no |       108 |          110 |     10 |   145.58 |  155.78 | 33.9381790312692 |
+| IK4-044 | d18O    |   0.1 | <2019-05-28 Tue> | B    |   20 | H         |       2 | no |        22 |           24 |     10 |   173.32 |  191.92 | 35.6221937639198 |
+| IK4-044 | d13C    |   0.3 | <2019-05-15 Wed> | B    |   20 | H         |       2 | no |        22 |           24 |     10 |   173.32 |  191.92 | 35.6221937639198 |
+| IK4-044 | D47     |   0.6 | <2019-05-22 Wed> | B    |   20 | H         |       2 | no |        22 |           24 |     10 |   173.32 |  191.92 | 35.6221937639198 |
+
+* plot measurements as a function of depth/age
+If you only require a package for one function, you don't have to load the
+whole package! You can use just the one function using the ~package::function()~
+notation. That's what we do here for ~lubridate~, an excellent package for
+dealing with time and date stamps.
+
+#+BEGIN_SRC R :output both :results output graphics :file measurements.png :width 700 :height 600
+  meas_info %>%
+    ## let's 'parse' or convert the character string date to actual dates, using
+    ## lubridate.
+    mutate(date = lubridate::ymd(date)) %>%
+    ## then set up the plot. Put all the shared aesthetics in the ggplot call
+    ggplot(aes(x=MCD_TOP, y=value, colour = date)) +
+    geom_point() +
+    ## and now we split up the plot into facets based on the column 'measure'.
+    facet_grid(rows=vars(measure)) +
+    ## add some axis labels
+    scale_x_continuous("Depth (mcd)",
+                       sec.axis=sec_axis(trans=agemodel_function, "Age (Ma)"))
+    ## and a secondary x-axis on top, using the agemodel_function we defined above.
+#+end_src
+
+#+RESULTS:
+[[file:measurements.png]]
+
+This is nice, because it allows for very fast data exploration. It works best, however, if all the measurements have the same unit. I.e. if you facet by species in a pollen plot, you can easily tweak the size and spacing of each facet with the
+#+begin_src R
+  facet_grid(rows=vars(measure), scales = "free_y", space = "free_y")
+#+end_src
+parameters.
+
+For the present plot it is not possible, for example to flip the axis on only
+the d18o plot. To do this we have to manually combine plots. I use ~patchwork~
+for this, which allows me to add plots together quite easily. But that's for
+another lesson!
+
+* let's end with something unnecessarily fancy
+It's always fun to end with something inspiring!
+
+The [[https://www.rayshader.com/][rayshader]] package recently (2 days ago?) added [[https://www.tylermw.com/3d-ggplots-with-rayshader/][ggplot]] conversion, allowing
+the creating of beautiful 3D plots of colour data. See the links for beautiful
+spinning animations.
+
+In the session I showed a live example of one of my ~geom_raster~ plots in 3D.
+
+* More advanced age model analysis
+To appropriately take into account uncertainties in the age or depth directions, we need something fancier than simple linear interpolation.
+
+After the holiday break in September, [[https://www.uu.nl/staff/TGiesecke][Thomas Giesecke]] will present the
+following packages in further detail.
+
+** clam
+Allows for inclusion of slumps and hiatuses, smoothing between tie-points.
+It is documented on the [[http://www.chrono.qub.ac.uk/blaauw/clam.html#sequence][website by Martin Blaauw]]
+
+** rbacon
+Allows for bayesian combination of tie-point uncertainties and incorporates
+likely sedimentation rates.
