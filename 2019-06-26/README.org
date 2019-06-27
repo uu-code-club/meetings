@@ -211,7 +211,10 @@ We can also define a function first, for later use in plotting:
 : <bytecode: 0x561f08cd7420>
 : <environment: 0x561f08cd6b28>
 
-This highlights that there are some overlapping x values. We'll talk about dealing with those in a future session, see also [[*More advanced age model analysis][More advanced age model analysis]].
+This highlights that there are some overlapping x values. We'll talk about
+dealing with those in a future session, see also
+[[https://github.com/uu-code-club/meetings/tree/master/2019-06-26#more-advanced-age-model-analysis][More
+advanced age model analysis]].
 
 * combine measurements with sample info
 You have some measurements or new data that you don't want to enter into your
