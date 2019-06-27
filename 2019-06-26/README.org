@@ -278,6 +278,7 @@ dealing with time and date stamps.
 
 #+RESULTS:
 [[file:measurements.png]]
+
 [[https://github.com/uu-code-club/meetings/raw/master/2019-06-26/measurements.png]]
 
 This is nice, because it allows for very fast data exploration. It works best, however, if all the measurements have the same unit. I.e. if you facet by species in a pollen plot, you can easily tweak the size and spacing of each facet with the
@@ -294,22 +295,32 @@ another lesson!
 * let's end with something unnecessarily fancy
 It's always fun to end with something inspiring!
 
-The [[https://www.rayshader.com/][rayshader]] package recently (2 days ago?) added [[https://www.tylermw.com/3d-ggplots-with-rayshader/][ggplot]] conversion, allowing
-the creating of beautiful 3D plots of colour data. See the links for beautiful
-spinning animations.
+The [[https://www.rayshader.com/][rayshader]] package recently (2 days ago?)
+added [[https://www.tylermw.com/3d-ggplots-with-rayshader/][ggplot]]
+conversion, allowing the creating of beautiful 3D plots of colour data. See the
+links for beautiful spinning animations.
 
 In the session I showed a live example of one of my ~geom_raster~ plots in 3D.
 
 * More advanced age model analysis
-To appropriately take into account uncertainties in the age or depth directions, we need something fancier than simple linear interpolation.
+To appropriately take into account uncertainties in the age or depth
+directions, we need something fancier than simple linear interpolation.
 
-After the holiday break in September, [[https://www.uu.nl/staff/TGiesecke][Thomas Giesecke]] will present the
-following packages in further detail.
+After the holiday break in September,
+[[https://www.uu.nl/staff/TGiesecke][Thomas Giesecke]] will present the
+following packages in further detail:
 
 ** clam
-Allows for inclusion of slumps and hiatuses, smoothing between tie-points.
-It is documented on the [[http://www.chrono.qub.ac.uk/blaauw/clam.html#sequence][website by Martin Blaauw]]
+The [[https://cran.r-project.org/web/packages/clam/clam.pdf][reference manual
+pdf for clam]] is apparently not great, but
+[[http://www.chrono.qub.ac.uk/blaauw/clam.html][this website]] should work.
+
+Clam allows for inclusion of slumps and hiatuses, smoothing between tie-points.
 
 ** rbacon
-Allows for bayesian combination of tie-point uncertainties and incorporates
+The [[https://cran.r-project.org/web/packages/rbacon/rbacon.pdf][reference
+manual pdf for rbacon]] is also documented in
+[[http://chrono.qub.ac.uk/blaauw/manualBacon_2.3.pdf][this extra pdf]]
+
+It allows for bayesian combination of tie-point uncertainties and incorporates
 likely sedimentation rates.
