@@ -8,8 +8,8 @@ date: "Nov 27, 2019"
 output: pdf_document
 ---
 
-# Agemodels with propagation of uncertainties
-During this month's Code Club meeting Thomas introduced us to the packaes `rbacon` and `clam` for age model reconstruction with appropriate uncertainty propagation. CLAM stands for "CLassical Age-depth Modelling" [http://chrono.qub.ac.uk/blaauw/clam.html]. Rbacon uses Bayesian statistics to resconstruct Bayesian ACcumulatiON histories for deposits with prior information [http://chrono.qub.ac.uk/blaauw/manualBacon_2.3.pdf].
+# Age-models with propagation of uncertainties
+During this month's Code Club meeting Thomas introduced us to the packages `rbacon` and `clam` for age model reconstruction with appropriate uncertainty propagation. CLAM stands for "Classical Age-depth Modelling" [http://chrono.qub.ac.uk/blaauw/clam.html]. Rbacon uses Bayesian statistics to reconstruct Bayesian ACcumulatiON histories for deposits with prior information [http://chrono.qub.ac.uk/blaauw/manualBacon_2.3.pdf].
 
 ```{r setup}
 
@@ -36,23 +36,23 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = 'CairoPDF')
 
 ## Linear interpolation
 
-Linear interpolation is wrong, but it is often the least wrong. Sedimentation rates in these models always changes at the age point that has been measured. So this must be in many instances wrong, sedimentation would have changed somewherer in between the age-points. Alternatives to linear interpolation are smooting splines and local regression, such as LOESS.
+Linear interpolation is wrong, but it is often the least wrong. Sedimentation rates in these models always changes at the age point that has been measured. So this must be in many instances wrong, sedimentation would have changed somewhere in between the age-points. Alternatives to linear interpolation are smoothing splines and local regression, such as LOESS.
 
 ## The Bayesian model
 
-Using a prior depending on the stratigraphic superposition, known rates of sedimentation rates can be used as prior information with these methods. Rbacon has also the advantage that the probability distribution of the age measurements, which can be unified, as in historical dates, or gaussian, or eratic data, as for radio carbon dates, can be appropriately .
+Using a prior depending on the stratigraphic superposition, known rates of sedimentation rates can be used as prior information with these methods. Rbacon has also the advantage that the probability distribution of the age measurements, which can be unified, as in historical dates, or Gaussian, or erratic data, as for radio carbon dates, can be appropriately .
 
 ## The verdict
 
-*CLassical*
+*Classical*
 
 * uncertainties on the interpolated can be implausible (for your sample in the age domain)
-* good for few age ddata oints
-* when uncerntainties are not important
-* outliers only detactable by eye
+* good for few age data points
+* when uncertainties are not important
+* outliers only detectable by eye
 
 *Bayesian*
-* statiscally rigorous
+* statistically rigorous
 * prior information included
 * sedimentation is included
 * outlier and hiatus detection
@@ -61,7 +61,7 @@ Using a prior depending on the stratigraphic superposition, known rates of sedim
 
 # Example
 
-## Loading a dataset
+## Loading a data-set
 
 Use the percent sign in the query as a wild card.
 
@@ -79,7 +79,7 @@ Biscay.age <- get_chroncontrol(Biscay.dat)
 
 ## Using Clam
 
-The following code will create an input files for Clam to run and place it in one folder with the same name, old Clam versions had a folder called "Cores" were folders with individual datasets would be placed in. In the new version that folder is called "Clam_runs". Clam works with both and creates one or the other folder when you run it the first time preferably with the example data: >clam().
+The following code will create an input files for Clam to run and place it in one folder with the same name, old Clam versions had a folder called "Cores" were folders with individual data-sets would be placed in. In the new version that folder is called "Clam_runs". Clam works with both and creates one or the other folder when you run it the first time preferably with the example data: >clam().
 
 Be aware of the type of "csv" file - clam expects coma separation! 
 
@@ -93,7 +93,7 @@ write_agefile(download = Biscay.dat[[1]],
 
 ```
 
-Set the working directory everytime when you use the clam function to the destination as defined in the previous lines.
+Set the working directory every time when you use the clam function to the destination as defined in the previous lines.
 
 
 # Clam model
@@ -101,7 +101,7 @@ Set the working directory everytime when you use the clam function to the destin
 This runs your site with the default settings, check the online manual at [http://chrono.qub.ac.uk/blaauw/clam.html] on the many options. 
 
 
-```{r eval=FALSE}
+```{r}
 
 # set directory which includes the Cores file
 # setwd("~/Documents/work/courses/uu-code-club/meetings/2019-11-27")
@@ -154,7 +154,7 @@ clam("Bis", cc= 2, type = 4, smooth=0.5, depths.file=TRUE)
 
 Rbacon breaks up your sequence, and makes a linear sequence for which it sequentially computes interpolation within the constrain of your prior. 
 
-As above for Clam, an agefile has to be created with the right format for Bacon, which is slightly different from the Clam input, note that you need to edit this file and indicate the calibration curve "cc" to be used (perhaps another colum as it is otherwise.
+As above for Clam, an age-file has to be created with the right format for Bacon, which is slightly different from the Clam input, note that you need to edit this file and indicate the calibration curve "cc" to be used (perhaps another column as it is otherwise.
 
 
 ```{r}
@@ -168,7 +168,7 @@ write_agefile(download = Biscay.dat[[1]],
               )
 ```
 
-Example, run an age model in Bacon, with an thicknes of 100 
+Example, run an age model in Bacon, with an thickness of 100 
 
 ```{r}
 
