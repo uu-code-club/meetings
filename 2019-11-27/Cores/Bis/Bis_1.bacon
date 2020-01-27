@@ -1,0 +1,17 @@
+## Ran on Mon Jan 27 16:05:23 2020 
+
+Cal 0 : ConstCal;
+Cal 1 : IntCal13, 0;
+Cal 2 : Marine13;
+Cal 3 : SHCal13, 0;
+
+##   id.   age    std   depth  delta.R  delta.STD     t.a   t.b   cc
+Det 0 : Radiocarbon_83372 , 26780, 290, 980,  0,  0,  3,  4,  1;
+Det 1 : Radiocarbon_83373 , 28680, 350, 1020,  0,  0,  3,  4,  1;
+Det 2 : Radiocarbon_83374 , 29530, 390, 1030,  0,  0,  3,  4,  1;
+Det 3 : Radiocarbon_83375 , 29560, 390, 1045,  0,  0,  3,  4,  1;
+Det 4 : Radiocarbon_83376 , 30290, 420, 1060,  0,  0,  3,  4,  1;
+Det 5 : Radiocarbon_83377 , 30950, 460, 1078,  0,  0,  3,  4,  1;
+
+##		 K   MinAge   MaxAge   th0   th0p   w.a   w.b   alpha  beta  dmin  dmax
+Bacon 0: FixT, 1,  -70,  1e+06,  26793,  26870,  2.8,  1.2,  1.5,  0.075, 980, 1080;

@@ -1,0 +1,17 @@
+Settings (square brackets give names of the constants)
+
+Calibration curve: Marine13.14C
+Age-depth model: polynomial regression [type=2] of order 2 [smooth]
+Weighted by the calibrated probabilities [wghts=1]
+Calculations at 95% confidence ranges [prob=0.95]
+Amount of iterations: 1000 [its]
+Calendar age point estimates for depths based on weighted average of all age-depth curves [est=1]
+Calendar scale used: cal BP [BCAD=FALSE] at a resolution of 1 yr [yrsteps]
+Ages were calculated every 1 [every] cm [depth], from 980 [dmin] to 1078 [dmax] cm
+
+Dates assumed outlying [outliers]: 2 (Radiocarbon_83373) 3 (Radiocarbon_83374)  
+
+Goodness-of-fit (-log, lower is better):  3.97 
+Any models with age-depth reversals were removed
+
+Produced Mon Jan 27 16:06:36 2020
