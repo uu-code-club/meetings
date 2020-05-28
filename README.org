@@ -3,6 +3,8 @@
 
 Contact code club hosts: [[https://www.uu.nl/staff/MANSchobben&t=0][Martin Schobben]] and [[https://www.uu.nl/staff/IJKocken][Ilja Kocken]].
 
+Sign up for [[http://eepurl.com/g5dGH9][our news letter]]!
+
 At our department of Earth Sciences, we have introduced monthly code club
 meetings for those interested, mainly focusing on using R for data analysis and
 plotting.
@@ -86,7 +88,6 @@ graphics.
 If you prefer books, try out the nice free introductory book [[https://r4ds.had.co.nz/][R for data science]].
 When you've progressed a bit, the book [[https://adv-r.hadley.nz/][Advanced R]] is a great resource for
 learning more.
-
 If you want to take a 1-day interactive course, the UU library provides one.
 It's pretty much always full so sign up early. All of their resources are
 [[https://github.com/UtrechtUniversity/workshop-introduction-to-R-and-data][available online]].
