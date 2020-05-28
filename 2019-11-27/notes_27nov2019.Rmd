@@ -1,0 +1,180 @@
+---
+title: "Meeting Notes"
+author: 
+- Thomas Giesecke
+- Martin Schobben
+- Ilja Kocken
+date: "Nov 27, 2019"
+output: pdf_document
+---
+
+# Age-models with propagation of uncertainties
+During this month's Code Club meeting Thomas introduced us to the packages `rbacon` and `clam` for age model reconstruction with appropriate uncertainty propagation. CLAM stands for "Classical Age-depth Modelling" [http://chrono.qub.ac.uk/blaauw/clam.html]. Rbacon uses Bayesian statistics to reconstruct Bayesian ACcumulatiON histories for deposits with prior information [http://chrono.qub.ac.uk/blaauw/manualBacon_2.3.pdf].
+
+```{r setup}
+
+# install
+# install.packages("clam")
+# install.packages("neotoma")
+# install.packages("rbacon")
+
+
+# required packages
+packages <- c("rbacon",
+              "clam",
+              "Cairo",
+              "neotoma")    
+
+# load packages
+invisible(lapply(packages, library, character.only = TRUE))
+
+
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = 'CairoPDF')
+
+```
+
+
+## Linear interpolation
+
+Linear interpolation is wrong, but it is often the least wrong. Sedimentation rates in these models always changes at the age point that has been measured. So this must be in many instances wrong, sedimentation would have changed somewhere in between the age-points. Alternatives to linear interpolation are smoothing splines and local regression, such as LOESS.
+
+## The Bayesian model
+
+Using a prior depending on the stratigraphic superposition, known rates of sedimentation rates can be used as prior information with these methods. Rbacon has also the advantage that the probability distribution of the age measurements, which can be unified, as in historical dates, or Gaussian, or erratic data, as for radio carbon dates, can be appropriately .
+
+## The verdict
+
+*Classical*
+
+* uncertainties on the interpolated can be implausible (for your sample in the age domain)
+* good for few age data points
+* when uncertainties are not important
+* outliers only detectable by eye
+
+*Bayesian*
+* statistically rigorous
+* prior information included
+* sedimentation is included
+* outlier and hiatus detection
+* sedimentation rate changes at date
+* when uncertainties are important
+
+# Example
+
+## Loading a data-set
+
+Use the percent sign in the query as a wild card.
+
+```{r}
+
+# loading the file
+Biscay <- get_site(sitename = "%Biscay") 
+# download the site
+Biscay.dat <- get_download(Biscay) 
+# extract the control points to build a chronology - these may be dates or other constraints
+Biscay.age <- get_chroncontrol(Biscay.dat) 
+
+
+```
+
+## Using Clam
+
+The following code will create an input files for Clam to run and place it in one folder with the same name, old Clam versions had a folder called "Cores" were folders with individual data-sets would be placed in. In the new version that folder is called "Clam_runs". Clam works with both and creates one or the other folder when you run it the first time preferably with the example data: >clam().
+
+Be aware of the type of "csv" file - clam expects coma separation! 
+
+```{r}
+
+write_agefile(download = Biscay.dat[[1]],
+              path = "~/Documents/work/courses/uu-code-club/meetings/2019-11-27",
+              corename = "Bis",
+              cal.prog = "Clam"
+              )
+
+```
+
+Set the working directory every time when you use the clam function to the destination as defined in the previous lines.
+
+
+# Clam model
+
+This runs your site with the default settings, check the online manual at [http://chrono.qub.ac.uk/blaauw/clam.html] on the many options. 
+
+
+```{r}
+
+# set directory which includes the Cores file
+# setwd("~/Documents/work/courses/uu-code-club/meetings/2019-11-27")
+clam("Bis")
+
+```
+
+
+Example 1, removing two dates as outliers, `cc=2` tells clam to use the marine calibration curve. 
+
+```{r}
+# set directory which includes the Cores file
+# setwd("~/Documents/work/courses/uu-code-club/meetings/2019-11-27")
+clam("Bis", cc= 2, type = 2, smooth=2, outliers = c(2,3)) 
+
+```
+
+Example 2, introducing a hiatus at depth 1040 cm. 
+
+
+```{r}
+# set directory which includes the Cores file
+# setwd("~/Documents/work/courses/uu-code-club/meetings/2019-11-27")
+clam("Bis", cc= 2, type = 2,  smooth=1, hiatus = 1040)  
+
+```
+ 
+Example 3, introducing a slump between 1035 and 1040 cm, more slumps can be added in the same list - they always need a start and end depth. 
+
+```{r}
+
+# set directory which includes the Cores file
+# setwd("~/Documents/work/courses/uu-code-club/meetings/2019-11-27")
+clam("Bis", cc= 2, type = 2,  smooth=1, slump = c(1035,1040)) 
+
+```
+
+If you specify `depths.file=TRUE` then `Clam` extrapolates for all samples for which you specify depth in a txt file, which in our case was automatically generated. 
+
+```{r}
+
+# set directory which includes the Cores file
+# setwd("~/Documents/work/courses/uu-code-club/meetings/2019-11-27")
+clam("Bis", cc= 2, type = 4, smooth=0.5, depths.file=TRUE) 
+
+```
+
+
+# Rbacon
+
+Rbacon breaks up your sequence, and makes a linear sequence for which it sequentially computes interpolation within the constrain of your prior. 
+
+As above for Clam, an age-file has to be created with the right format for Bacon, which is slightly different from the Clam input, note that you need to edit this file and indicate the calibration curve "cc" to be used (perhaps another column as it is otherwise.
+
+
+```{r}
+
+# make a new file for Bacon
+
+write_agefile(download = Biscay.dat[[1]],
+              path = "~/Documents/work/courses/uu-code-club/meetings/2019-11-27",
+              corename = "Bis",
+              cal.prog = "Bacon"
+              )
+```
+
+Example, run an age model in Bacon, with an thickness of 100 
+
+```{r}
+
+# put directory to directory which includes the Cores file
+# setwd("~/Documents/work/courses/uu-code-club/meetings/2019-11-27")
+Bacon("Bis", thick = 100)
+
+```
+
