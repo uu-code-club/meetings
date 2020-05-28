@@ -1,8 +1,7 @@
 #+TITLE: Code Club meeting notes
 #+AUTHOR: Ilja J. Kocken and Martin Schobben
 
-Contact code club hosts: [[https://www.uu.nl/staff/MANSchobben&t=0][Martin
-Schobben]] and [[https://www.uu.nl/staff/IJKocken][Ilja Kocken]].
+Contact code club hosts: [[https://www.uu.nl/staff/MANSchobben&t=0][Martin Schobben]] and [[https://www.uu.nl/staff/IJKocken][Ilja Kocken]].
 
 At our department of Earth Sciences, we have introduced monthly code club
 meetings for those interested, mainly focusing on using R for data analysis and
@@ -14,37 +13,38 @@ We've recently shifted the aims of our code club to be more beginner-friendly,
 so please don't hesitate to show up!
 
 * Future meetings
-We postpone the meetings until the end of the summer holidays and start back up
-in September 2019!
+We will start scheduling online meetings soon!
 
 | date           | possible topic                                   | instructor |
 |----------------+--------------------------------------------------+------------|
-| september 2019 | agemodels with uncertainty using clam and rbacon | Thomas     |
+|                |                                                  |            |
 
-To participate in the next
-[[https://www.uu.nl/en/events/introduction-to-r-data-26-september-2019][Introduction
-to R and data UU library course]], which takes place on *2019-09-26*, sign up
-on July 25th 2019, the courses so far have filled up very rapidly!
+
+We highly recommend attending the [[https://www.uu.nl/en/research/research-data-management/training-workshops/introduction-to-r-data][Introduction to R and data]] courses, in which
+the ITS staff teaches you the basics of R in one full day event. The courses so
+far have filled up very rapidly!
 
 * Past meetings
-| date             | topic and packages used                                    | instructor  |
-|------------------+------------------------------------------------------------+-------------|
-| <2019-01-23 Wed> | RMarkdown                                                  | Martin      |
-| <2019-02-27 Wed> | Plotting devices, ggplot fancy labels, faceting            | Martin/Ilja |
-| <2019-03-27 Wed> | for loops, general recommendations, monte-carlo smoothing? | Ilja/Martin |
-| <2019-05-22 Wed> | time series analysis, moving averages, loess, pangaear,    | Martin/Ilja |
-| <2019-06-26 Wed> | agemodels, linear interpolation, plotting, clam, rbacon    | Ilja        |
+| date             | topic and packages used                                    | instructor        |
+|------------------+------------------------------------------------------------+-------------------|
+| <2019-01-23 Wed> | RMarkdown                                                  | Martin            |
+| <2019-02-27 Wed> | Plotting devices, ggplot fancy labels, faceting            | Martin/Ilja       |
+| <2019-03-27 Wed> | for loops, general recommendations, monte-carlo smoothing? | Ilja/Martin       |
+| <2019-05-22 Wed> | time series analysis, moving averages, loess, pangaear,    | Martin/Ilja       |
+| <2019-06-26 Wed> | agemodels, linear interpolation, plotting, clam, rbacon    | Ilja              |
+| <2019-06-26 Wed> | agemodels with uncertainty using clam and rbacon           | Thomas            |
+| <2019-11-27 Wed> | more on ggplot2---no notes?                                | Ilja              |
+| <2020-01-29 Wed> | general working meeting                                    | Ilja/Martin/Peter |
+| <2020-02-26 Wed> | general working meeting                                    | Ilja/Martin/Peter |
+|                  |                                                            |                   |
 
 * Installing R and RStudio
-Download and install the latest version of R from
-[[https://cran.r-project.org/]]. Note that on MacOS you need to install some
-extra stuff, so follow the install guide for MacOS (previous link) and don't
-forget to install [[http://xquartz.macosforge.org/][XQuartz]].
+Download and install the latest version of R from [[https://cran.r-project.org/]].
+Note that on MacOS you need to install some extra stuff, so follow the install
+guide for MacOS (previous link) and don't forget to install [[http://xquartz.macosforge.org/][XQuartz]].
 
 RStudio is probably the easiest and most convenient integrated desktop
-environment (IDE) for R, so next,
-[[https://www.rstudio.com/products/rstudio/download/][download and install
-RStudio]].
+environment (IDE) for R, so next, [[https://www.rstudio.com/products/rstudio/download/][download and install RStudio]].
 
 * Resources for learning
 If you're a beginner, it's probably fastest to learn the basics of R by
@@ -70,28 +70,23 @@ library("swirl")
 swirl()
 #+end_src
 
-Here you've installed your first ~package~. Packages are the bread and butter
-of R, why write code if somebody else has already done the hard work for you?
-We strongly recommend using all of the R-packages in the
-[[https://www.tidyverse.org/][tidyverse]], such as ~readr~ and ~readxl~ for
-reading in data, ~dplyr~ for data manipulation and ~ggplot2~ for plotting.
-Check out the PDF cheatsheets from RStudio for quick visual reminders of what
-everything does.
+Here you've installed your first ~package~. Packages are the bread and butter of
+R, why write code if somebody else has already done the hard work for you? We
+strongly recommend using all of the R-packages in the [[https://www.tidyverse.org/][tidyverse]], such as ~readr~
+and ~readxl~ for reading in data, ~dplyr~ for data manipulation and ~ggplot2~ for
+plotting. Check out the PDF cheatsheets from RStudio for quick visual reminders
+of what everything does.
 
 Then take some of the nice online courses, for which you don't need R on your
 computer. You can do everything in the browser! This
-[[https://www.datacamp.com/courses/free-introduction-to-r][datacamp
-introduction course]] is a great start. This
-[[https://www.datacamp.com/courses/data-visualization-with-ggplot2-1][datacamp
-visualisation with ggplot2]] is a great place to learn about the grammar of
+[[https://www.datacamp.com/courses/free-introduction-to-r][datacamp introduction course]] is a great start. This
+[[https://www.datacamp.com/courses/data-visualization-with-ggplot2-1][datacamp visualisation with ggplot2]] is a great place to learn about the grammar of
 graphics.
 
-If you prefer books, try out the nice free introductory book
-[[https://r4ds.had.co.nz/][R for data science]]. When you've progressed a bit,
-the book [[https://adv-r.hadley.nz/][Advanced R]] is a great resource for
+If you prefer books, try out the nice free introductory book [[https://r4ds.had.co.nz/][R for data science]].
+When you've progressed a bit, the book [[https://adv-r.hadley.nz/][Advanced R]] is a great resource for
 learning more.
 
 If you want to take a 1-day interactive course, the UU library provides one.
 It's pretty much always full so sign up early. All of their resources are
-[[https://github.com/UtrechtUniversity/workshop-introduction-to-R-and-data][available
-online]].
+[[https://github.com/UtrechtUniversity/workshop-introduction-to-R-and-data][available online]].
