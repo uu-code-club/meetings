@@ -19,7 +19,7 @@ We will start scheduling online meetings soon!
 
 | date             | possible topic                                   | instructor        |
 |------------------+--------------------------------------------------+-------------------|
-| <2019-01-23 Wed> | general working meeting                          | Ilja/Martin/Peter |
+| <2020-06-17 Wed> | general working meeting                          | Ilja/Martin/Peter |
 
 
 We highly recommend attending the [[https://www.uu.nl/en/research/research-data-management/training-workshops/introduction-to-r-data][Introduction to R and data]] courses, in which
