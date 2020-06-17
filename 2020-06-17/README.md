@@ -42,3 +42,7 @@ demo found in the
     ## Warning: Removed 616 rows containing non-finite values (stat_smooth).
 
 ![](README_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
+
+# Cats spotted during the meeting
+
+![](nonu.jpg)<!-- -->

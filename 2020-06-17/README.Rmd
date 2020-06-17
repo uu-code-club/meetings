@@ -68,4 +68,11 @@ ggplotly(p, height = 800, width = 1600) %>%
 
 ```
 
+# Cats spotted during the meeting
+
+```{r}
+
+knitr::include_graphics("nonu.jpg")
+
+```
 
