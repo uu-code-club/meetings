@@ -95,3 +95,5 @@ ggplot(long_format, aes(y = SampleID , x = value)) +
 ```
 
 ![](README_files/figure-gfm/ggplot-1.png)<!-- -->
+
+<img src="bonenburg.png" width="680" />
