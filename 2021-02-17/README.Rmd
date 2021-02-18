@@ -13,7 +13,7 @@ output:
 
 
 
-```{r}
+```{r setup, include=FALSE}
 # Default knitr options
 knitr::opts_chunk$set(
    dpi = 300,
@@ -27,7 +27,7 @@ A minimal example of a workflow for plotting timeseries in geology with `tidyver
 
 Load `tidyverse`, your swiss army knife!
 
-```{r tidy}
+```{r tidy, message=FALSE}
 
 library(tidyverse)
 
@@ -43,10 +43,10 @@ Here is an example of loading palynofloral dataset that I published some time ag
 ```{r readr}
 
 # install.packages("readr")
-# library(readr) is already loaded in tidyverse
+# library(readr) is already loaded with tidyverse
 bonenburg <- read_csv(
    "https://raw.githubusercontent.com/MartinSchobben/bonenburg/master/supplement/data/palynomorphs/Bonenburg_palyno.csv", 
-   col_types = "dddddddddd-"
+   col_types = "d--ddddddd-"
    )
 
 ```
@@ -57,7 +57,7 @@ This data is now in a wide format.
 
 ```{r wide , echo=FALSE}
 
-bonenburg %>% knitr::kable()
+head(bonenburg) %>% knitr::kable()
 
 ```
 
@@ -75,9 +75,9 @@ tb_xlsx <- read_xlsx(readxl_example("clippy.xlsx"))
 ```
 
 
-```{r xlsx}
+```{r xlsx, echo=FALSE}
 
-knitr::kable(tb_xlsx)
+knitr::kable(head(tb_xlsx))
 
 ```
 
@@ -89,27 +89,31 @@ After loading the data, first adjust your dataframe to a long format, where ever
 ```{r long}
 
 # long format
-long_format <- bonenburg %>% pivot_longer(-SampleID)
+long_format <- bonenburg %>% 
+   pivot_longer(-SampleID)
 
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 
-long_format %>% knitr::kable()
+head(long_format) %>% knitr::kable()
 
 ```
 
 
 # Plotting data for exploration with ggplot2
 
+
 Finally, we can plot this data with `ggplot2` and display all the variable by making use of `facet_grid()`.
 
-```{r ggplot}
+```{r ggplot, warning=FALSE}
 
 ggplot(long_format, aes(y = SampleID , x = value)) +
    geom_point() +
-   facet_grid(cols = vars(name))
+   facet_grid(cols = vars(name)) +
+   theme_classic()
 
 ```
+
 
