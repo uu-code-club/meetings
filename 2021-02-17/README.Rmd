@@ -123,9 +123,12 @@ p <- ggplot(long_format, aes(y = SampleID , x = value)) +
    facet_grid(cols = vars(name)) +
    theme_classic()
 
-ggsave("bonenburg.png", p, width = 18, height = 12, unit = "cm")
+ggsave("bonenburg.jpg", p, width = 18, height = 12, unit = "cm")
+```
 
-knitr::include_graphics("bonenburg.png")
+
+```{r echo = FALSE}
+knitr::include_graphics("bonenburg.jpg")
 
 ```
 
