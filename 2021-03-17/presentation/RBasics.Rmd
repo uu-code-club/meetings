@@ -5,11 +5,14 @@ author: "Martin Schobben"
 date: "March 17, 2021"
 output: 
   ioslides_presentation:
-    incremental: true
+    incremental: false
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(
+  echo = FALSE ,
+  comment = "#>"
+  )
 ```
 
 ## R in Rstudio
@@ -307,32 +310,29 @@ The data frame is a commonly used object to store tabulated data.
 + This is because it is a special type of list, every element has the same length  
 + Each element of the list can be thought of as a column
 + Data frames have a special attribute called `row.names`
-+ Data frames are usually created by calling `read.csv()`
 
-## Data frames
+I recommend using the new reincarnation of the data frame --- the `tibble` from tidyverse 
 
-`> x <- data.frame(foo = 1:4, bar = c(TRUE, FALSE, TRUE, FALSE))`  
-`> x`  
-&emsp;`foo`&emsp;`bar`  
-`1   1`&emsp;&emsp;`TRUE`  
-`2   2`&emsp;&emsp;`FALSE`  
-`3   3`&emsp;&emsp;`TRUE`  
-`4   4`&emsp;&emsp;`FALSE`  
-`> nrow(x)`    
-`[1] 4`  
-`> ncol(x)`  
-`[1] 2`  
+## Tibble
+
+```{r echo=TRUE}
+library(tibble) # tidyverse
+x <- tibble(foo = 1:4, bar = c(TRUE, FALSE, TRUE, FALSE))  
+x
+```
+
+ 
 
 ## Reading and writing data
 
 Loading you data into R is best done with the tidyverse `readr` package
 
-- read_csv(): comma separated (CSV) files
-- read_tsv(): tab separated files
-- read_delim(): general delimited files
-- read_fwf(): fixed width files
-- read_table(): tabular files where columns are separated by white-space.
-- read_log(): web log files
+- `read_csv()`: comma separated (CSV) files
+- `read_tsv()`: tab separated files
+- `read_delim()`: general delimited files
+- `read_fwf()`: fixed width files
+- `read_table()`: tabular files where columns are separated by white-space.
+- `read_log()`: web log files
 
 Description on website: "In many cases, these functions will just work"!
 
