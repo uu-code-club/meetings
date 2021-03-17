@@ -1,0 +1,61 @@
+---
+title: "Reproducible workflow"
+subtitle: "Data Management"
+author: "Martin Schobben"
+date: "March 17, 2021"
+output: 
+  ioslides_presentation:
+    incremental: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Credits
+
+- Hadeley Wickham & Garrett Grolemund -- ["R for Data Science: Chapter 8"](https://r4ds.had.co.nz/workflow-projects.html)
+- Quentin Read -- ["Tips for a smooth R(Studio) workflow and reproducible R code"](https://cyberhelp.sesync.org/blog/reproducible-r-workflow.html)
+
+```{r out.width="30%"}
+knitr::include_graphics("Rfordata.png")
+```
+
+## R project
+
+- All files kept at one place
+- Files rooted relative to the project
+
+Linux: `~/Documents/work/my_project`     
+Windows: `C:\Documents\work\myproject`
+
+- Experienced users: version control and building
+
+## Data Management
+
+- Keep raw data outside of R project
+
+```{r out.width="100%"}
+knitr::include_graphics("DM.png")
+```
+
+- Make data files `read-only`
+- Keep back-ups of the data directory: [UU surf drive](https://www.uu.nl/en/news/save-and-share-files-securely-with-surfdrive) 
+
+## Loading data
+
+- Explicit file paths
+
+`file.path(data_dir, "my.csv")`
+
+- Setting a symlink in your project repository
+
+`file.symlink(from = data_dir, to = 'data')`
+
+## Reproducible R code
+
+- Clear variable and function names
+- Comments  with `#`
+- R Markdown
+
+
