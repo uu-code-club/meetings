@@ -44,6 +44,8 @@ knitr::include_graphics("DM.png")
 
 ## Loading data
 
+**Pointing to the file**
+
 - Explicit file paths
 
 `file.path(data_dir, "my.csv")`
@@ -51,6 +53,10 @@ knitr::include_graphics("DM.png")
 - Setting a symlink in your project repository
 
 `file.symlink(from = data_dir, to = 'data')`
+
+**Loading the file**
+
+I suggest to always use the `readr` package for .csv (tab delim) and not the base function e.g. `read.csv()`
 
 ## Reproducible R code
 

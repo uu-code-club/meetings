@@ -3170,6 +3170,8 @@ slide:not(.current) .plotly.html-widget{
 
 </article></slide><slide class=""><hgroup><h2>Loading data</h2></hgroup><article  id="loading-data">
 
+<p><strong>Pointing to the file</strong></p>
+
 <ul>
 <li>Explicit file paths</li>
 </ul>
@@ -3181,6 +3183,10 @@ slide:not(.current) .plotly.html-widget{
 </ul>
 
 <p><code>file.symlink(from = data_dir, to = &#39;data&#39;)</code></p>
+
+<p><strong>Loading the file</strong></p>
+
+<p>I suggest to always use the <code>readr</code> package for .csv (tab delim) and not the base function e.g. <code>read.csv()</code></p>
 
 </article></slide><slide class=""><hgroup><h2>Reproducible R code</h2></hgroup><article  id="reproducible-r-code">
 

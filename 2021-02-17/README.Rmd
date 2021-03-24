@@ -11,8 +11,6 @@ output:
 ---
 
 
-
-
 ```{r setup, include=FALSE}
 # Default knitr options
 knitr::opts_chunk$set(
@@ -20,7 +18,6 @@ knitr::opts_chunk$set(
    digits = 2,
    results = 'asis'
    )
-
 ```
 
 A minimal example of a workflow for plotting timeseries in geology with `tidyverse`.
@@ -90,7 +87,7 @@ After loading the data, first adjust your dataframe to a long format, where ever
 
 # long format
 long_format <- bonenburg %>% 
-   pivot_longer(-SampleID)
+   tidyr::pivot_longer(-SampleID)
 
 ```
 
