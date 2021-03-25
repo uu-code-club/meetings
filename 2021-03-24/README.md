@@ -41,10 +41,10 @@ tb_dino <- read_csv(github_path, col_types = cols(.default = "?"))
 
 # Data wrangling
 
-To get the data in order for plotting I select the species as well as
-genera. The genera ar then pooled in the `mutate()` call, whereafter a
-`pivot_longer()` operation transforms the remaining data in long format
-for plotting.
+To get the data in the right order for plotting I select the species as
+well as genera. The genera ar then pooled in the `mutate()` call,
+thereafter a `pivot_longer()` operation transforms the remaining data in
+long format for plotting.
 
 ``` r
 dino_species <- c("Selenopemphix antarctica", "Nematosphaeropsis labyrinthus")
@@ -74,9 +74,9 @@ The plot call is rather simple, just mind that you specify the
 orientation.
 
 ``` r
-ggplot(tb_area, aes(x = percent , y = depth, fill = taxa)) +
+p <- ggplot(tb_area, aes(x = percent , y = depth, fill = taxa)) +
   geom_area(position = "stack", orientation = "y") +
   scale_y_reverse() 
 ```
 
-![](README_files/figure-gfm/area-1.png)<!-- -->
+<img src="sangiorgietal2018.jpg" width="2125" />
