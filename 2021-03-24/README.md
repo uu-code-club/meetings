@@ -76,7 +76,14 @@ orientation.
 ``` r
 p <- ggplot(tb_area, aes(x = percent , y = depth, fill = taxa)) +
   geom_area(position = "stack", orientation = "y") +
-  scale_y_reverse() 
+  scale_y_continuous(expand = c(0,0), trans = "reverse") +
+  scale_x_continuous(expand = c(0,0)) +
+  labs(
+    fill = "",
+    y = "depth (mbsf)",
+    x = "%"
+  ) +
+  theme_classic()
 ```
 
 <img src="sangiorgietal2018.jpg" width="2125" />
