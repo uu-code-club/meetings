@@ -15,11 +15,11 @@ We've recently shifted the aims of our code club to be more beginner-friendly,
 so please don't hesitate to show up!
 
 * Future meetings
-We will start scheduling online meetings soon!
+PPGU has organised a meeting for data visualization for the upcoming NAC conference.
 
-| date           | possible topic                                   | instructor |
-|----------------+--------------------------------------------------+------------|
-|                |                                                  |            |
+| date             | possible topic                                   | instructor        |
+|------------------+--------------------------------------------------+-------------------|
+| <2021-03-17 Wed> | PPGU                                             | Ilja/Martin/Peter |
 
 
 We highly recommend attending the [[https://www.uu.nl/en/research/research-data-management/training-workshops/introduction-to-r-data][Introduction to R and data]] courses, in which
@@ -38,7 +38,8 @@ far have filled up very rapidly!
 | <2019-11-27 Wed> | more on ggplot2---no notes?                                | Ilja              |
 | <2020-01-29 Wed> | general working meeting                                    | Ilja/Martin/Peter |
 | <2020-02-26 Wed> | general working meeting                                    | Ilja/Martin/Peter |
-|                  |                                                            |                   |
+| <2021-03-17 Wed> | PPGU workshop                                              | Ilja/Martin/Peter |
+| <2021-03-24 Wed> | general working meeting (PPGU)                             | Ilja/Martin/Peter |
 
 * Installing R and RStudio
 Download and install the latest version of R from [[https://cran.r-project.org/]].
