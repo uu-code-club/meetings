@@ -119,4 +119,4 @@ Put it beside the previous plots with [[https://patchwork.data-imaginist.com/][p
 * save your figure for further refinement
 difference between raster and vector graphics.
 
-as a PDF or EPS so that you can tweak it further in Inkscape (or Illustrator)
+as a PDF or EPS so that you can tweak it further in [[https://inkscape.org/][Inkscape]] (or Illustrator)
