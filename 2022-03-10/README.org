@@ -1,0 +1,122 @@
+#+title: R workshop for the PPGU
+#+author: Ilja Kocken
+#+property: header-args:R  :session *R:workshop* :exports both :results output :eval no-export
+
+* data
+clean data!
+
+* ggplot and the grammar of graphics
+what is an aesthetic?
+
+* use patchwork to combine plots
+With simple addition or division, and then with ~plot_layout()~ for more control.
+
+* add core photographs to the plot
+Let's add the core photographs!
+
+We follow the steps in my other repository, [[https://github.com/japhir/corepics][corepics]].
+
+I like to use a simple folder structure for most of my work:
+- dat :: takes raw data (in this case also core photographs)
+- imgs :: all the images we create go in here
+- out :: intermediate results, such as rds files or exported csv's go here
+
+We download the images from http://web.iodp.tamu.edu/LORE/
+Searching for Expedition 318 and Site U1356.
+
+This gets us many large images.
+
+We put them in ~dat/corepics~.
+
+Now we read in the CSV file and make sure that the metadata are linked to the
+images.
+
+#+begin_src R :results value :colnames yes
+  library(ggplot2)
+  library(dplyr)
+  library(readr)
+  library(stringr)
+  # we also use functions from tidylog because we like to see what's going on
+  library(ggtextures)
+
+  # this is the CSV we downloaded from LORE
+  cp <- read_csv("dat/2022-03-04_LORE_U1356.csv")
+
+  # list all the downloaded jpg files
+  fl <- tibble(file = list.files("dat/corepics", pattern=".jpg")) |>
+    # extract the ID from the filename
+    # this might take some work! Explaining regexes is a bit out of scope here,
+    # I just want to show that it is possible.
+    tidylog::mutate(id = str_extract(file, "^EXP318_[0-9]{7}_") %>%
+                      str_replace("EXP318_", "") %>%
+                      str_replace("_", "") %>%
+                      parse_double())
+
+  # append the file names as we have them in our downloaded folder to the table
+  # with depth info
+  cp <- cp %>%
+    # merge the file info (section depth etc.) with the image name
+    tidylog::left_join(fl, by = c("Cropped image (JPG) link" = "id")) %>%
+    tidylog::mutate(file = str_replace(file, ".jpg", ".png"))
+
+  head(cp)
+#+end_src
+
+#+RESULTS:
+
+| Exp | Site  | Hole | Core | Type | Sect | A/W | Top depth CSF-A (m) | Bottom depth CSF-A (m) | Top depth CSF-B (m) | Bottom depth CSF-B (m) | Display status (T/F) | Uncropped image (JPG) link | Uncropped image filename                          | Cropped image (JPG) link | Cropped image filename                                 | Timestamp (UTC)     | Instrument | Instrument group | Text ID     | Test No. | Sample comments | Test comments | Result comments | file                                                                  |
+|-----+-------+------+------+------+------+-----+---------------------+------------------------+---------------------+------------------------+----------------------+----------------------------+---------------------------------------------------+--------------------------+--------------------------------------------------------+---------------------+------------+------------------+-------------+----------+-----------------+---------------+-----------------+-----------------------------------------------------------------------|
+| 318 | U1356 | A    |    1 | R    |    1 | A   |                   0 |                    1.5 |                   0 |                    1.5 | TRUE                 |                    5938821 | 318-U1356A-1R-1-A_SHLF2068741_20100122224555.jpg  |                  5938841 | 318-U1356A-1R-1-A_SHLF2068741_20100122224555_trim.jpg  | 2010-01-23 04:49:41 | JAICV107CL | SHIL             | SHLF2068741 | 16391761 |                 |               |                 | EXP318_5938841_318-U1356A-1R-1-A_SHLF2068741_20100122224555_trim.png  |
+| 318 | U1356 | A    |    1 | R    |    2 | A   |                 1.5 |                      3 |                 1.5 |                      3 | TRUE                 |                    5938921 | 318-U1356A-1R-2-A_SHLF2068771_20100122225326.jpg  |                  5938941 | 318-U1356A-1R-2-A_SHLF2068771_20100122225326_trim.jpg  | 2010-01-23 04:59:53 | JAICV107CL | SHIL             | SHLF2068771 | 16392161 |                 |               |                 | EXP318_5938941_318-U1356A-1R-2-A_SHLF2068771_20100122225326_trim.png  |
+| 318 | U1356 | A    |    1 | R    |    3 | A   |                   3 |                   4.46 |                   3 |                   4.46 | TRUE                 |                    5939101 | 318-U1356A-1R-3-A_SHLF2068801_20100122230903.jpg  |                  5939121 | 318-U1356A-1R-3-A_SHLF2068801_20100122230903_trim.jpg  | 2010-01-23 05:12:27 | JAICV107CL | SHIL             | SHLF2068801 | 16392631 |                 |               |                 | EXP318_5939121_318-U1356A-1R-3-A_SHLF2068801_20100122230903_trim.png  |
+| 318 | U1356 | A    |    1 | R    |   CC | A   |                4.46 |                    4.6 |                4.46 |                    4.6 | TRUE                 |                    5939241 | 318-U1356A-1R-CC-A_SHLF2068831_20100122232252.jpg |                  5939261 | 318-U1356A-1R-CC-A_SHLF2068831_20100122232252_trim.jpg | 2010-01-23 05:25:00 | JAICV107CL | SHIL             | SHLF2068831 | 16393751 |                 |               |                 | EXP318_5939261_318-U1356A-1R-CC-A_SHLF2068831_20100122232252_trim.png |
+| 318 | U1356 | A    |    2 | R    |    1 | A   |                 9.5 |                     11 |                 9.5 |                     11 | TRUE                 |                    5940441 | 318-U1356A-2R-1-A_SHLF2068891_20100123022512.jpg  |                  5940461 | 318-U1356A-2R-1-A_SHLF2068891_20100123022512_trim.jpg  | 2010-01-23 08:30:12 | JAICV107CL | SHIL             | SHLF2068891 | 16397081 |                 |               |                 | EXP318_5940461_318-U1356A-2R-1-A_SHLF2068891_20100123022512_trim.png  |
+| 318 | U1356 | A    |    2 | R    |    2 | A   |                  11 |                   12.5 |                  11 |                   12.5 | TRUE                 |                    5940501 | 318-U1356A-2R-2-A_SHLF2068921_20100123023455.jpg  |                  5940521 | 318-U1356A-2R-2-A_SHLF2068921_20100123023455_trim.jpg  | 2010-01-23 08:40:24 | JAICV107CL | SHIL             | SHLF2068921 | 16398411 |                 |               |                 | EXP318_5940521_318-U1356A-2R-2-A_SHLF2068921_20100123023455_trim.png  |
+
+Now we *must* make sure to resize the image, or you'll definitely crash your R! They're big, collectively!
+
+As calculated earlier, 60 pixels wide should be good enough.
+
+I don't know if every Windows/Mac system has mogrify available, but it's a tool from [[https://imagemagick.org/script/index.php][ImageMagick]].
+You can also use whatever other tool you can find that can "batch resize" images.
+
+#+begin_src R :eval never
+  system("mogrify -resize 60 -format png dat/corepics/*.jpg")
+#+end_src
+
+This takes quite some time, so I did it before hand to not keep you waiting.
+
+Once it's done, we can create our core photograph plot!
+
+#+begin_src R :results output graphics file :file imgs/corephotograph.png :width 450 :height 1000
+  corepicsplot <- cp |>
+    filter(`Bottom depth CSF-B (m)` < 450) |>
+    ggplot(aes(y = `Bottom depth CSF-B (m)`,
+               xmin = 0L, xmax = 1L,
+               ymin = `Bottom depth CSF-B (m)`,
+               ymax = `Top depth CSF-B (m)`,
+               image = paste0("dat/corepics/", file))) +
+    geom_rect(alpha = .2) +
+    geom_textured_rect(colour = NA, nrow = 1, ncol = 1,
+                       img_width = unit(1, "null"), img_height = unit(1, "null"),
+                       interpolate = FALSE) +
+    facet_grid(cols = vars(Hole)) +
+    scale_y_reverse() +
+    labs(title = "IODP Leg 318 Site U1356",
+         subtitle = "core photographs",
+         caption = "created by Ilja Kocken") +
+    theme(axis.title.x = element_blank(), axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(), panel.grid = element_blank())
+  corepicsplot
+#+end_src
+
+#+RESULTS:
+
+[[file:imgs/corephotograph.png]]
+
+Put it beside the previous plots with [[https://patchwork.data-imaginist.com/][patchwork]].
+
+* save your figure for further refinement
+difference between raster and vector graphics.
+
+as a PDF or EPS so that you can tweak it further in Inkscape (or Illustrator)
