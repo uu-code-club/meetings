@@ -1,0 +1,423 @@
+---
+title: "Plot PPGU workshop"
+output:
+  ioslides_presentation: default
+  ioslides: default
+date: '2022-03-04'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+
+
+```{r}
+#first, we need to install packages and/or load them
+
+#install.packages("tidyverse")
+#install.packages("ggplot2")
+#install.packages("patchwork")
+#install.packages("readxl")
+
+
+
+library("tidyverse")
+library("ggplot2")
+library("patchwork")
+library("readr")
+
+
+```
+
+```{r} 
+# read data files into Rstudio
+TEX<-read_excel("Sangiorgi_TEX.xlsx")
+Dino<-read_excel("Sangiorgi_dino.xls")
+
+view(TEX)
+view(Dino)
+
+```
+
+```{r} 
+ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
+  geom_point(colour="red")+
+  geom_line(linetype=2)+
+  geom_ribbon(mapping=aes(ymin=(TEX-0.06),ymax=(TEX+0.06)), width=10,alpha=0.25,fill="blue")+
+  labs(title="plot_sample_1",x="Depth (mbsf)", y=expression(TEX[86]))+
+  scale_x_continuous(limits=c(80,420),breaks=seq(75,420,25))+
+  scale_y_continuous(limits=c(0.2,0.8))+
+  theme_classic()
+
+
+```
+
+
+```{r} 
+ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
+  geom_point(aes(color=`BIT`))+
+  geom_line()+
+  labs(title="TEX86_sample_1",x="Depth (mbsf)", y=expression(TEX[86]))+
+  scale_x_continuous(limits=c(80,420),breaks=seq(75,420,25))+
+  scale_y_continuous(limits=c(0.4,0.6))+
+  theme_classic()+
+  theme(axis.title=element_text(size=12,colour="black"),
+        axis.text=element_text(size=12,colour="black"),
+        axis.ticks=element_line(colour="black"))+
+  annotate("text",x=325,y=0.58,label="Peak BIT")+
+  annotate("rect",xmin=300,xmax=350,ymin=0.56,ymax=0.6,alpha=.2)
+  
+
+```
+
+```{r} 
+
+ggplot(data=TEX)+
+  geom_line(mapping=aes(x=`Depth mbsf`,y=`Methan index`),colour="blue")+
+  geom_line(mapping=aes(x=`Depth mbsf`,y=`GDGT2/GDGT3`),colour="red")+
+  labs(title="plot_sample_2",x="Depth (mbsf)", y="Methane Index")+
+  scale_x_continuous(limits=c(80,420),breaks=seq(75,420,25))+
+  scale_y_continuous(limits=c(0,1),sec.axis=sec_axis(~.*2,name="GDGT2/GDGT3"))+
+  theme_classic()+
+  theme(axis.title.y.left=element_text(size=12,colour="blue"),
+        axis.title.y.right=element_text(size=12,colour="red"),
+        axis.text=element_text(size=12,colour="black"),
+        axis.ticks=element_line(colour="black"))
+
+ 
+```
+
+```{r} 
+#get data in right order for area plot
+
+dino_species <- c("Selenopemphix antarctica", "Nematosphaeropsis labyrinthus")
+dino_genera <- c("Impagidinium tot", "Operculodinium")
+# Selecting
+tb_area <- Dino %>% 
+  select(
+    depth = "depth (mbsf)",
+    any_of(dino_species), 
+    starts_with(dino_genera[1]), 
+    starts_with(dino_genera[2])
+    ) %>% 
+ rowwise() %>% 
+  mutate(
+    !!dino_genera[1] := sum(c_across(starts_with(dino_genera[1]))),
+    !!dino_genera[2] := sum(c_across(starts_with(dino_genera[2]))),
+    .keep = "unused"
+    ) %>% 
+  mutate(remainder = 100 - sum(c_across(-depth))) %>% 
+  drop_na() %>% 
+  pivot_longer(-depth, names_to = "taxa", values_to = "percent") 
+
+
+```
+
+```{r} 
+#areaplot
+
+ggplot(data=tb_area, mapping=aes(x = depth , y = percent, fill = taxa)) +
+  geom_area(position = "stack", orientation = "x") +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(limits=c(80,420),breaks=seq(75,420,25),expand = c(0,0)) +
+  labs(
+    fill = "",
+    y = "%",
+    x = "Depth (mbsf)"
+  ) +
+  theme_classic()+
+  scale_fill_brewer(palette="Spectral")+
+  theme(axis.title=element_text(size=12,colour="black"),
+        axis.text=element_text(size=12,colour="black"),
+        axis.ticks=element_line(colour="black"),
+        legend.position="bottom")
+
+
+```
+
+
+```{r} 
+#horizontaL plotting
+P1<-ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
+  geom_point(colour="red")+
+  geom_line(linetype=2)+
+  geom_ribbon(mapping=aes(ymin=(TEX-0.06),ymax=(TEX+0.06)), width=10,alpha=0.25,fill="blue")+
+  labs(x="Depth (mbsf)", y=expression(TEX[86]))+
+  scale_x_continuous(position="top",limits=c(80,420),breaks=seq(75,420,25))+
+  scale_y_continuous(limits=c(0.2,0.8))+
+  theme_classic()+
+  theme(axis.title=element_text(size=12,colour="black"),
+        axis.text=element_text(size=12,colour="black"),
+        axis.ticks=element_line(colour="black"))
+
+
+P2<-ggplot(data=TEX)+
+  geom_line(mapping=aes(x=`Depth mbsf`,y=`Methan index`),colour="blue")+
+  geom_line(mapping=aes(x=`Depth mbsf`,y=`GDGT2/GDGT3`),colour="red")+
+  labs(x="Depth (mbsf)", y="Methane Index")+
+  scale_x_continuous(limits=c(80,420),breaks=seq(75,420,25))+
+  scale_y_continuous(limits=c(0,1),sec.axis=sec_axis(~.*2,name="GDGT2/GDGT3"))+
+  theme_classic()+
+  theme(axis.title.y.left  =element_text(size=12,colour="red"),
+        axis.text.y.left= element_text(size=12,colour="red"),
+        axis.title.y.right =element_text(size=12,colour="blue"),
+        axis.text.y.right=element_text(size=12,colour="blue"),
+        axis.ticks.y=element_line(colour="black"),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.line.x=element_blank(),
+        axis.title.x=element_blank())
+
+
+P3<-ggplot(data=tb_area, mapping=aes(x = depth , y = percent, fill = taxa)) +
+  geom_area(position = "stack", orientation = "x") +
+  geom_segment(alpha=0.1,aes(y=100,xend = depth, yend=0))+
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(limits=c(80,420),breaks=seq(75,420,25),expand = c(0,0)) +
+  labs(
+    fill = "",
+    y = "%",
+    x = "Depth (mbsf)"
+  ) +
+  theme_classic()+
+  scale_fill_brewer(palette="Spectral")+
+  theme(axis.title=element_text(size=12,colour="black"),
+        axis.text=element_text(size=12,colour="black"),
+        axis.ticks=element_line(colour="black"),
+        legend.position="bottom")
+
+P1+P2+P3+plot_layout(nrow=3)
+
+ggsave("finalfigh.pdf")
+```
+
+```{r}
+#vertical plotting
+P1<-ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
+  geom_point(colour="red")+
+  geom_line(linetype=2)+
+  geom_ribbon(mapping=aes(ymin=(TEX-0.06),ymax=(TEX+0.06)), width=10,alpha=0.25,fill="blue")+
+  coord_flip()+
+  labs(x="Depth (mbsf)", y=expression(TEX[86]))+
+  scale_x_continuous(trans="reverse",limits=c(420,80),breaks=seq(420,80,-25))+
+  scale_y_continuous(limits=c(0.2,0.8))+
+  theme_classic()+
+  theme(axis.title=element_text(size=10,colour="black"),
+        axis.text=element_text(size=10,colour="black"),
+        axis.ticks=element_line(colour="black"))
+
+
+
+P2<-ggplot(data=TEX)+
+  geom_line(mapping=aes(x=`Depth mbsf`,y=`Methan index`),colour="blue")+
+  geom_line(mapping=aes(x=`Depth mbsf`,y=`GDGT2/GDGT3`),colour="red")+
+  coord_flip()+
+  labs(x="Depth (mbsf)", y="Methane Index")+
+ scale_x_continuous(trans="reverse",limits=c(420,80),breaks=seq(420,80,-25))+
+  scale_y_continuous(limits=c(0,1),sec.axis=sec_axis(~.*2,name="GDGT2/GDGT3"))+
+  theme_classic()+
+  theme(axis.title.x.bottom =element_text(size=10,colour="red"),
+        axis.text.x.bottom= element_text(size=10,colour="red"),
+        axis.title.x.top =element_text(size=10,colour="blue"),
+        axis.text.x.top=element_text(size=10,colour="blue"),
+        axis.ticks.x=element_line(colour="black"),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y=element_blank(),
+        axis.title.y=element_blank())
+
+
+P3<-ggplot(data=tb_area, mapping=aes(x = depth , y = percent, fill = taxa)) +
+  geom_area(position = "stack", orientation = "x") +
+  geom_segment(alpha=0.1,aes(y=100,xend = depth, yend=0))+
+  coord_flip()+
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(trans="reverse",limits=c(420,80),breaks=seq(420,80,-25))+
+  labs(
+    fill = "",
+    y = "%",
+    x = "Depth (mbsf)"
+  ) +
+  theme_classic()+
+  scale_fill_brewer(palette="Spectral")+
+  theme(axis.title.x=element_text(size=10,colour="black"),
+        axis.text.x=element_text(size=10,colour="black"),
+        axis.ticks.x=element_line(colour="black"),
+        axis.title.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.line.y=element_blank(),
+        legend.position="right",
+        legend.text = element_text(size=8,colour="black"))
+
+P1+P2+P3+plot_layout(ncol=3)
+
+
+ggsave("finalfigv.pdf")
+```
+```{r}
+#get data in right order for area plot AGE
+
+dino_species <- c("Selenopemphix antarctica", "Nematosphaeropsis labyrinthus")
+dino_genera <- c("Impagidinium tot", "Operculodinium")
+# Selecting
+tb_area_age <- Dino %>% 
+  select(
+    age = "age (Ma) (ref)",
+    any_of(dino_species), 
+    starts_with(dino_genera[1]), 
+    starts_with(dino_genera[2])
+    ) %>% 
+  rowwise() %>% 
+  mutate(
+    !!dino_genera[1] := sum(c_across(starts_with(dino_genera[1]))),
+    !!dino_genera[2] := sum(c_across(starts_with(dino_genera[2]))),
+    .keep = "unused"
+    ) %>% 
+  mutate(remainder = 100 - sum(c_across(-age))) %>% 
+  drop_na() %>% 
+  pivot_longer(-age, names_to = "taxa", values_to = "percent")
+
+```
+
+
+```{r}
+
+ggplot(data=tb_area_age, mapping=aes(x = age , y = percent, fill = taxa)) +
+  geom_area(position = "stack", orientation = "x") +
+  geom_segment(alpha=0.1,aes(y=100,xend = age, yend=0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(limits=c(10.5,17),breaks=seq(10.5,17,1.5),expand = c(0,0)) +
+  labs(
+    fill = "",
+    y = "%",
+    x = "Age (Ma)"
+  ) +
+  theme_classic()+
+  scale_fill_brewer(palette="Spectral")+
+  theme(axis.title=element_text(size=12,colour="black"),
+        axis.text=element_text(size=12,colour="black"),
+        axis.ticks=element_line(colour="black"),
+        legend.position="bottom")
+
+```
+
+```{r}
+
+#vertical plotting
+P1<-ggplot(data=TEX,mapping=aes(x=`age`,y=`TEX`))+
+  geom_point(colour="red")+
+  geom_line(linetype=2)+
+  geom_ribbon(mapping=aes(ymin=(TEX-0.06),ymax=(TEX+0.06)), width=10,alpha=0.25,fill="blue")+
+  coord_flip()+
+  labs(x="Age (Ma)", y=expression(TEX[86]))+
+  scale_x_continuous(trans="reverse",limits=c(17,10.5),breaks=seq(17,10.5,-1.5))+
+  scale_y_continuous(limits=c(0.2,0.8))+
+  theme_classic()+
+  theme(axis.title=element_text(size=10,colour="black"),
+        axis.text=element_text(size=10,colour="black"),
+        axis.ticks=element_line(colour="black"))
+
+
+
+P2<-ggplot(data=TEX)+
+  geom_line(mapping=aes(x=`age`,y=`Methan index`),colour="blue")+
+  geom_line(mapping=aes(x=`age`,y=`GDGT2/GDGT3`),colour="red")+
+  coord_flip()+
+  labs(x="Age (Ma)", y="Methane Index")+
+ scale_x_continuous(trans="reverse",limits=c(17,10.5),breaks=seq(17,10.5,-1.5))+
+  scale_y_continuous(limits=c(0,1),sec.axis=sec_axis(~.*2,name="GDGT2/GDGT3"))+
+  theme_classic()+
+  theme(axis.title.x.bottom =element_text(size=10,colour="red"),
+        axis.text.x.bottom= element_text(size=10,colour="red"),
+        axis.title.x.top =element_text(size=10,colour="blue"),
+        axis.text.x.top=element_text(size=10,colour="blue"),
+        axis.ticks.x=element_line(colour="black"),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y=element_blank(),
+        axis.title.y=element_blank())
+
+
+P3<-ggplot(data=tb_area_age, mapping=aes(x = age , y = percent, fill = taxa)) +
+  geom_area(position = "stack", orientation = "x") +
+  geom_segment(alpha=0.1,aes(y=100,xend = age, yend=0))+
+  coord_flip()+
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(trans="reverse",limits=c(17,10.5),breaks=seq(17,10.5,-1.5))+
+  labs(
+    fill = "",
+    y = "%",
+    x = "Age (Ma)"
+  ) +
+  theme_classic()+
+  scale_fill_brewer(palette="Spectral")+
+  theme(axis.title.x=element_text(size=10,colour="black"),
+        axis.text.x=element_text(size=10,colour="black"),
+        axis.ticks.x=element_line(colour="black"),
+        axis.title.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.line.y=element_blank(),
+        legend.position="right",
+        legend.text = element_text(size=8,colour="black"))
+
+P1+P2+P3+plot_layout(ncol=3)
+
+
+
+```
+
+```{r}
+
+GTS <- read_csv("https://github.com/japhir/GeologicTimeScale/raw/master/GTS_widths.csv")
+
+
+gtsplot <- GTS %>%
+  # subset it to only show Periods
+  filter(type == "Age") %>%
+  # filter to our time range
+  filter(between(top, 10 , 17 )) %>%
+  # rectangles for each period
+  ggplot() +
+  scale_y_reverse()+
+  geom_rect(aes(xmin = start, xmax = end, ymin = top, ymax = bot, fill = col),
+            show.legend = FALSE, col = "black") +
+  # make sure that the fill colour is given by our hex colours
+  scale_fill_identity() +
+  # add period names
+  geom_text(aes(y = meanage, x = meanwidth, label = name, size = fontsize * .5,
+                ## angle = fontangle,
+                col = fontcolor, fontface = fontface)) +
+  # make sure the font size is set to your liking
+  scale_size_identity() +
+  scale_colour_identity() +
+  # add axis label for age axis
+  labs(y = "Age (millions of years ago)") +
+  theme(
+    # remove gray panel
+    panel.grid = element_blank(),
+    panel.background = element_blank(),
+    # remove y axis entirely
+    axis.line.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()) +
+  coord_cartesian(ylim = c(10,17))
+gtsplot
+
+
+```
