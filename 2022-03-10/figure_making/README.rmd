@@ -40,8 +40,8 @@ library(readxl)
 
 ```{r}
 # read data files into Rstudio
-TEX<-read_excel("Sangiorgi_TEX.xlsx")
-Dino<-read_excel("Sangiorgi_dino.xls")
+TEX <- read_excel("Sangiorgi_TEX.xlsx")
+Dino <- read_excel("Sangiorgi_dino.xls")
 
 # inspect the columns and data types
 glimpse(TEX)
@@ -56,7 +56,7 @@ ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
               alpha = 0.25, fill = "blue") +
   labs(title = "plot_sample_1",x = "Depth (mbsf)", y = TEX[86] ~ "(-)") +
   scale_x_continuous(breaks = seq(75, 420, 25)) +
-  coord_cartesian(xlim = c(80, 420), ylim = c(0.2, 0.8))
+  coord_cartesian(xlim = c(80, 420), ylim = c(0.2, 0.8)) +
   theme_classic()
 ```
 
@@ -74,8 +74,6 @@ ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
         axis.ticks=element_line(colour="black"))+
   annotate("text",x=325,y=0.58,label="Peak BIT")+
   annotate("rect",xmin=300,xmax=350,ymin=0.56,ymax=0.6,alpha=.2)
-
-
 ```
 
 ```{r}
