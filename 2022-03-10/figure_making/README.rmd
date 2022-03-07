@@ -23,50 +23,45 @@ When you click the **Knit** button a document will be generated that includes bo
 - Bullet 3
 
 
+First, we need to install packages and/or load them:
 
 ```{r}
-#first, we need to install packages and/or load them
-
 #install.packages("tidyverse")
 #install.packages("ggplot2")
 #install.packages("patchwork")
 #install.packages("readxl")
 
-
-
-library("tidyverse")
-library("ggplot2")
-library("patchwork")
-library("readr")
-
-
+library(tidyverse)
+library(ggplot2)
+library(patchwork)
+library(readr)
+library(readxl)
 ```
 
-```{r} 
+```{r}
 # read data files into Rstudio
 TEX<-read_excel("Sangiorgi_TEX.xlsx")
 Dino<-read_excel("Sangiorgi_dino.xls")
 
-view(TEX)
-view(Dino)
-
+# inspect the columns and data types
+glimpse(TEX)
+glimpse(Dino)
 ```
 
-```{r} 
-ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
-  geom_point(colour="red")+
-  geom_line(linetype=2)+
-  geom_ribbon(mapping=aes(ymin=(TEX-0.06),ymax=(TEX+0.06)), width=10,alpha=0.25,fill="blue")+
-  labs(title="plot_sample_1",x="Depth (mbsf)", y=expression(TEX[86]))+
-  scale_x_continuous(limits=c(80,420),breaks=seq(75,420,25))+
-  scale_y_continuous(limits=c(0.2,0.8))+
+```{r}
+ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
+  geom_point(colour = "red") +
+  geom_line(linetype = 2) +
+  geom_ribbon(mapping = aes(ymin = (TEX - 0.06), ymax = (TEX + 0.06)),
+              alpha = 0.25, fill = "blue") +
+  labs(title = "plot_sample_1",x = "Depth (mbsf)", y = TEX[86] ~ "(-)") +
+  scale_x_continuous(breaks = seq(75, 420, 25)) +
+  coord_cartesian(xlim = c(80, 420), ylim = c(0.2, 0.8))
   theme_classic()
-
-
 ```
 
 
-```{r} 
+```{r}
 ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
   geom_point(aes(color=`BIT`))+
   geom_line()+
@@ -79,11 +74,11 @@ ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
         axis.ticks=element_line(colour="black"))+
   annotate("text",x=325,y=0.58,label="Peak BIT")+
   annotate("rect",xmin=300,xmax=350,ymin=0.56,ymax=0.6,alpha=.2)
-  
+
 
 ```
 
-```{r} 
+```{r}
 
 ggplot(data=TEX)+
   geom_line(mapping=aes(x=`Depth mbsf`,y=`Methan index`),colour="blue")+
@@ -97,36 +92,36 @@ ggplot(data=TEX)+
         axis.text=element_text(size=12,colour="black"),
         axis.ticks=element_line(colour="black"))
 
- 
+
 ```
 
-```{r} 
+```{r}
 #get data in right order for area plot
 
 dino_species <- c("Selenopemphix antarctica", "Nematosphaeropsis labyrinthus")
 dino_genera <- c("Impagidinium tot", "Operculodinium")
 # Selecting
-tb_area <- Dino %>% 
+tb_area <- Dino %>%
   select(
     depth = "depth (mbsf)",
-    any_of(dino_species), 
-    starts_with(dino_genera[1]), 
+    any_of(dino_species),
+    starts_with(dino_genera[1]),
     starts_with(dino_genera[2])
-    ) %>% 
- rowwise() %>% 
+    ) %>%
+ rowwise() %>%
   mutate(
     !!dino_genera[1] := sum(c_across(starts_with(dino_genera[1]))),
     !!dino_genera[2] := sum(c_across(starts_with(dino_genera[2]))),
     .keep = "unused"
-    ) %>% 
-  mutate(remainder = 100 - sum(c_across(-depth))) %>% 
-  drop_na() %>% 
-  pivot_longer(-depth, names_to = "taxa", values_to = "percent") 
+    ) %>%
+  mutate(remainder = 100 - sum(c_across(-depth))) %>%
+  drop_na() %>%
+  pivot_longer(-depth, names_to = "taxa", values_to = "percent")
 
 
 ```
 
-```{r} 
+```{r}
 #areaplot
 
 ggplot(data=tb_area, mapping=aes(x = depth , y = percent, fill = taxa)) +
@@ -149,7 +144,7 @@ ggplot(data=tb_area, mapping=aes(x = depth , y = percent, fill = taxa)) +
 ```
 
 
-```{r} 
+```{r}
 #horizontaL plotting
 P1<-ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
   geom_point(colour="red")+
