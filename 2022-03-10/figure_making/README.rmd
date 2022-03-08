@@ -36,7 +36,6 @@ library(readr)
 # read data files
 TEX <- read_csv("https://raw.githubusercontent.com/uu-code-club/meetings/master/2022-03-10/figure_making/Sangiorgi_TEX.csv")
 Dino <- read_csv("https://raw.githubusercontent.com/uu-code-club/meetings/master/2022-03-10/figure_making/Sangiorgi_dino.csv")
-
 ```
 # Fig 1 - TEX86 versus depth
 ```{r}
@@ -303,4 +302,22 @@ P3 <- ggplot(data = tb_area, mapping = aes(x = depth, y = percent, fill = taxa))
 P1 + P2 + P3 + plot_layout(ncol = 3)
 
 ggsave("finalfigv.pdf")
+```
+
+# Q&A
+
+How do we make weird figure axes with commonly used symbols in our fields?
+
+We saw it already in the TEX[86] value, where whe used an expression for subscript.
+
+See [this guide on using expressions for plots](https://www.dataanalytics.org.uk/axis-labels-in-r-plots-using-expression/)
+
+Here are some common examples:
+```{r}
+ggplot() +
+  labs(title = delta^{18}*O ~ "(\u2030 VSMOW)",
+       subtitle = delta^{13} * C ~ "(\u2030 VPDB)",
+       x = TEX[86] ~ "(-)", y = "Temperature (°C)") +
+  annotate(geom = "text", x = 1, y = 1, label = Uk[37]^{"'"} ~ "(-)")
+  # what else can you think of?
 ```

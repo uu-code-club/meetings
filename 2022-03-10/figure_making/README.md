@@ -334,3 +334,30 @@ P1 + P2 + P3 + plot_layout(ncol = 3)
 ``` r
 ggsave("finalfigv.pdf")
 ```
+
+# Q&A
+
+How do we make weird figure axes with commonly used symbols in our
+fields?
+
+We saw it already in the TEX\[86\] value, where whe used an expression
+for subscript.
+
+See [this guide on using expressions for
+plots](https://www.dataanalytics.org.uk/axis-labels-in-r-plots-using-expression/)
+
+Here are some common examples:
+
+``` r
+ggplot() +
+  labs(title = delta^{18}*O ~ "(\u2030 VSMOW)",
+       subtitle = delta^{13} * C ~ "(\u2030 VPDB)",
+       x = TEX[86] ~ "(-)", y = "Temperature (°C)") +
+  annotate(geom = "text", x = 1, y = 1, label = Uk[37]^{"'"} ~ "(-)")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+``` r
+  # what else can you think of?
+```
