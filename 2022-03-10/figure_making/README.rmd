@@ -183,6 +183,10 @@ ggplot(data = tb_area, mapping = aes(x = depth, y = percent, fill = taxa)) +
 # Fig 5 - Hor. combined plots 1,3,4
 We first store ggplots as variables (P1,P2,P#), which we then simply combine by P1+P2+P3 using the "patchwork" package.
 The figure is saved as an pdf using "ggsave".
+
+There is a [feature request in the patchwork package](https://github.com/thomasp85/patchwork/issues/150)
+to do built-in axis merging, but this hasn't seen any action for a while.
+
 ```{r}
 P1 <- ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
   geom_point(colour = "red") +
@@ -202,9 +206,11 @@ P2 <- ggplot(data = TEX) +
   geom_line(mapping = aes(x = `Depth mbsf`, y = `Methan index`), colour = "blue") +
   labs(x = "Depth (mbsf)", y = "Methane Index") +
   scale_x_continuous(breaks = seq(75, 420, 25)) +
+  # unfortunately we have to set the axis limits the same for each subfigure
   coord_cartesian(xlim = c(80, 420)) +
   theme_classic() +
   theme(
+    # and get rid of all the elements that will be the same in the other panels
     axis.title.y = element_text(size = 12, colour = "black"),
     axis.text.y = element_text(size = 12, colour = "black"),
     axis.ticks.y = element_line(colour = "black"),
