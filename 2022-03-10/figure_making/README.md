@@ -111,6 +111,13 @@ Note the transformation of wide format (as the data was principally
 loaded into R) to long format using the “pivot_longer” function. This
 allows ggplot to plot the species/genera as a variable (fill / color)
 
+Discussing this workflow in detail is beyond the scope of today’s
+workshop, but we recommend that you read up on [tidy
+data](https://r4ds.had.co.nz/tidy-data.html),
+[pivoting](https://r4ds.had.co.nz/tidy-data.html#pivoting), and many
+other data processing topics in the excellent [R for Data
+Science](https://r4ds.had.co.nz/).
+
 ``` r
 # get data in right order for area plot
 dino_species <- c("Selenopemphix antarctica", "Nematosphaeropsis labyrinthus")
