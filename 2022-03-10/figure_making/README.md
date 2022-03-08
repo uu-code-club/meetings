@@ -119,28 +119,47 @@ other data processing topics in the excellent [R for Data
 Science](https://r4ds.had.co.nz/).
 
 ``` r
-# get data in right order for area plot
+# this is a list of the species of interest, typed exactly as in the data.
 dino_species <- c("Selenopemphix antarctica", "Nematosphaeropsis labyrinthus")
+# and here is a list of the genera of interest, that we want to summarize.
 dino_genera <- c(imp = "Impagidinium tot", opr = "Operculodinium")
 
+# we create a new data.frame (or actually a tibble) that is a copy of Dino
 tb_area <- Dino %>%
+  # and we make a selection of only the columns of interest
   select(
     depth = "depth (mbsf)",
+    # any of the columns in dino_species (a nice way to subset by a character vector)
     any_of(dino_species),
+    # as well as all the columns that start with the genus name.
     starts_with(dino_genera[["imp"]]),
     starts_with(dino_genera[["opr"]])
   ) %>%
+  # we group the data by row, so that the next calculations are done for each
+  # row separately. This is the same as creating a new row_index value that is
+  # unique for each row (sample ID) and then group_by(row_index)
   rowwise() %>%
   mutate(
+    # this is a fancy way of adding a new column, where we use a variable to
+    # determine the name of the new column. It's the same as saying:
+    # `Impagidinium tot` = sum(...).
     !!dino_genera[["imp"]] := sum(c_across(starts_with(dino_genera[["imp"]]))),
     !!dino_genera[["opr"]] := sum(c_across(starts_with(dino_genera[["opr"]]))),
+    # for more on this stuff, see
+    # https://cran.r-project.org/web/packages/dplyr/vignettes/programming.html
     .keep = "unused"
   ) %>%
+  # we calculate how many of the totals do not fall into the species and genera
+  # of interest
   mutate(remainder = 100 - sum(c_across(-depth))) %>%
+  # get rid of rows with NAs
   drop_na() %>%
+  # and convert to "tidy" format, where each row now represents a single
+  # percentage.
   pivot_longer(-depth, names_to = "taxa", values_to = "percent")
 
-# let's have a look at what this looks like: (the conversion is just for github so it looks better)
+# let's have a look at what this looks like:
+# (the conversion is just for github so it looks better)
 head(as.data.frame(tb_area))
 #>    depth                          taxa percent
 #> 1  95.61      Selenopemphix antarctica    37.8
