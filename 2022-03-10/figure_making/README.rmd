@@ -95,28 +95,51 @@ ggplot(data=TEX)+
 
 ```{r}
 #get data in right order for area plot
-
 dino_species <- c("Selenopemphix antarctica", "Nematosphaeropsis labyrinthus")
-dino_genera <- c("Impagidinium tot", "Operculodinium")
-# Selecting
+dino_genera <- c(imp = "Impagidinium tot", opr = "Operculodinium")
+# pivot first
 tb_area <- Dino %>%
   select(
     depth = "depth (mbsf)",
     any_of(dino_species),
-    starts_with(dino_genera[1]),
-    starts_with(dino_genera[2])
-    ) %>%
+    starts_with(dino_genera[["imp"]]),
+    starts_with(dino_genera[["opr"]])
+    ) %>% 
+ # dummy variable
+ mutate(remainder = 0) %>% 
+ pivot_longer(-depth, names_to = "taxa", values_to = "percent") %>%
+ # make grouping id 
+ mutate(
+    grp = case_when(
+      str_detect(taxa, dino_genera[["imp"]]) ~ "imp", 
+      str_detect(taxa, dino_genera[["opr"]]) ~ "opr",
+      TRUE ~ taxa
+     )
+    ) %>%  
+ group_by(depth, grp) %>% 
+ summarise(percent = sum(percent, na.rm = TRUE), .groups = "drop_last") %>%
+ # calculate remainder
+ mutate(percent = if_else(grp == "remainder", 100 - sum(percent), percent)) %>% 
+ ungroup() %>% 
+ mutate(taxa = recode(grp, !!!dino_genera), .keep = "unused")
+
+# pivot later
+tb_area <- Dino %>%
+  select(
+    depth = "depth (mbsf)",
+    any_of(dino_species),
+    starts_with(dino_genera[["imp"]]),
+    starts_with(dino_genera[["opr"]])
+    ) %>% 
  rowwise() %>%
-  mutate(
-    !!dino_genera[1] := sum(c_across(starts_with(dino_genera[1]))),
-    !!dino_genera[2] := sum(c_across(starts_with(dino_genera[2]))),
-    .keep = "unused"
-    ) %>%
-  mutate(remainder = 100 - sum(c_across(-depth))) %>%
-  drop_na() %>%
-  pivot_longer(-depth, names_to = "taxa", values_to = "percent")
-
-
+ mutate(
+   !!dino_genera[["imp"]] := sum(c_across(starts_with(dino_genera[["imp"]]))),
+   !!dino_genera[["opr"]] := sum(c_across(starts_with(dino_genera[["opr"]]))),
+   .keep = "unused"
+   ) %>%
+ mutate(remainder = 100 - sum(c_across(-depth))) %>%
+ drop_na() %>%
+ pivot_longer(-depth, names_to = "taxa", values_to = "percent")
 ```
 
 ```{r}
