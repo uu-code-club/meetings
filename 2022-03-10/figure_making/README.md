@@ -32,22 +32,24 @@ Dino <- read_csv("https://raw.githubusercontent.com/uu-code-club/meetings/master
 # Fig 1 - TEX86 versus depth
 
 ``` r
-#TEX is loaded as dataset and the depth column is mapped to the x-axis, and TEX to the y-axis
+# TEX is loaded as dataset and the depth column is mapped to the x-axis, and TEX to the y-axis
 ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
-      #the first geometry, a simple red point per measurement is added
+  # the first geometry, a simple red point per measurement is added
   geom_point(colour = "red") +
-      #in a similar way, we add a line, and specify its width
+  # in a similar way, we add a line, and specify its width
   geom_line(linetype = 2) +
-      #An artifical "error" of 0.06 TEX86 units has been added and plotted using geom_ribbon. We make it transparent by changing the alpha
-  geom_ribbon(mapping = aes(ymin = (TEX - 0.06), ymax = (TEX + 0.06)),
-              alpha = 0.25, fill = "blue") +
-      #we add the title off the plot and of the axis
-  labs(title = "plot_sample_1",x = "Depth (mbsf)", y = TEX[86] ~ "(-)") +
-      #we can specify the breaks of the x-axis 
+  # An artifical "error" of 0.06 TEX86 units has been added and plotted using geom_ribbon. We make it transparent by changing the alpha
+  geom_ribbon(
+    mapping = aes(ymin = (TEX - 0.06), ymax = (TEX + 0.06)),
+    alpha = 0.25, fill = "blue"
+  ) +
+  # we add the title off the plot and of the axis
+  labs(title = "plot_sample_1", x = "Depth (mbsf)", y = TEX[86] ~ "(-)") +
+  # we can specify the breaks of the x-axis
   scale_x_continuous(breaks = seq(75, 420, 25)) +
-      #and also the limits of the x and y axis
+  # and also the limits of the x and y axis
   coord_cartesian(xlim = c(80, 420), ylim = c(0.2, 0.8)) +
-      #finally, to get rid of the standard grey background and other settings, we change the theme tot the "classic" preset
+  # finally, to get rid of the standard grey background and other settings, we change the theme tot the "classic" preset
   theme_classic()
 ```
 
@@ -56,45 +58,46 @@ ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
 # Fig 2 - TEX86 versus depth (+BIT & annotation)
 
 ``` r
-#TEX is loaded as dataset and the depth column is mapped to the x-axis, and TEX to the y-axis
-ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
-      #we add a point geometry, but change the aestetic mapping, so that the color of the point corresponds to the BIT index (another column within the TEX dataset)
-  geom_point(aes(color=`BIT`))+
-      #simple line between points
-  geom_line()+
-      #add labels
-  labs(title="TEX86_sample_1",x="Depth (mbsf)", y=expression(TEX[86]))+
-      #like within coord_certesian, we can set the limits (and breaks) within scale_x_continuous
-  scale_x_continuous(limits=c(80,420),breaks=seq(75,420,25))+
-      #same for y axis
-  scale_y_continuous(limits=c(0.4,0.6))+
-      #add the classic theme
-  theme_classic()+
-      #we can customize the preset looks of the plot by changing element wihtin the theme. In this example, we change the size and color of the text
-  theme(axis.title=element_text(size=12,colour="black"),
-        axis.text=element_text(size=12,colour="black"),
-        axis.ticks=element_line(colour="black"))+
-      #an annotation is added using annotate. This can be both text or shapes
-  annotate("text",x=325,y=0.58,label="Peak BIT")+
-  annotate("rect",xmin=300,xmax=350,ymin=0.56,ymax=0.6,alpha=.2)
+# TEX is loaded as dataset and the depth column is mapped to the x-axis, and TEX to the y-axis
+ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
+  # we add a point geometry, but change the aestetic mapping, so that the color of the point corresponds to the BIT index (another column within the TEX dataset)
+  geom_point(aes(color = `BIT`)) +
+  # simple line between points
+  geom_line() +
+  # add labels
+  labs(title = "TEX86_sample_1", x = "Depth (mbsf)", y = expression(TEX[86])) +
+  # set breaks
+  scale_x_continuous(breaks = seq(75, 420, 25)) +
+  # set limits
+  coord_cartesian(xlim = c(80, 420), ylim = c(0.4, 0.6)) +
+  # add the classic theme
+  theme_classic() +
+  # we can customize the preset looks of the plot by changing element wihtin the theme. In this example, we change the size and color of the text
+  theme(
+    axis.title = element_text(size = 12, colour = "black"),
+    axis.text = element_text(size = 12, colour = "black"),
+    axis.ticks = element_line(colour = "black")
+  ) +
+  # an annotation is added using annotate. This can be both text or shapes
+  annotate("text", x = 325, y = 0.58, label = "Peak BIT") +
+  annotate("rect", xmin = 300, xmax = 350, ymin = 0.56, ymax = 0.6, alpha = .2)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-# Fig 3 - Methane index & GDGT2/3 versus depth
+# Fig 3 - Methane index versus depth
 
 ``` r
-ggplot(data=TEX)+
-  geom_line(mapping=aes(x=`Depth mbsf`,y=`Methan index`),colour="blue")+
-  geom_line(mapping=aes(x=`Depth mbsf`,y=`GDGT2/GDGT3`),colour="red")+
-  labs(title="plot_sample_2",x="Depth (mbsf)", y="Methane Index")+
-  scale_x_continuous(limits=c(80,420),breaks=seq(75,420,25))+
-  scale_y_continuous(limits=c(0,1),sec.axis=sec_axis(~.*2,name="GDGT2/GDGT3"))+
-  theme_classic()+
-  theme(axis.title.y.left=element_text(size=12,colour="blue"),
-        axis.title.y.right=element_text(size=12,colour="red"),
-        axis.text=element_text(size=12,colour="black"),
-        axis.ticks=element_line(colour="black"))
+ggplot(data = TEX) +
+  geom_line(mapping = aes(x = `Depth mbsf`, y = `Methan index`), colour = "blue") +
+  labs(title = "plot_sample_2", x = "Depth (mbsf)", y = "Methane Index") +
+  scale_x_continuous(breaks = seq(75, 420, 25)) +
+  coord_cartesian(xlim = c(80, 420)) +
+  theme_classic() +
+  theme(
+    axis.text = element_text(size = 12, colour = "black"),
+    axis.ticks = element_line(colour = "black")
+  )
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
@@ -109,7 +112,7 @@ loaded into R) to long format using the “pivot_longer” function. This
 allows ggplot to plot the species/genera as a variable (fill / color)
 
 ``` r
-#get data in right order for area plot
+# get data in right order for area plot
 dino_species <- c("Selenopemphix antarctica", "Nematosphaeropsis labyrinthus")
 dino_genera <- c(imp = "Impagidinium tot", opr = "Operculodinium")
 
@@ -119,36 +122,39 @@ tb_area <- Dino %>%
     any_of(dino_species),
     starts_with(dino_genera[["imp"]]),
     starts_with(dino_genera[["opr"]])
-    ) %>% 
- rowwise() %>%
- mutate(
-   !!dino_genera[["imp"]] := sum(c_across(starts_with(dino_genera[["imp"]]))),
-   !!dino_genera[["opr"]] := sum(c_across(starts_with(dino_genera[["opr"]]))),
-   .keep = "unused"
-   ) %>%
- mutate(remainder = 100 - sum(c_across(-depth))) %>%
- drop_na() %>%
- pivot_longer(-depth, names_to = "taxa", values_to = "percent")
+  ) %>%
+  rowwise() %>%
+  mutate(
+    !!dino_genera[["imp"]] := sum(c_across(starts_with(dino_genera[["imp"]]))),
+    !!dino_genera[["opr"]] := sum(c_across(starts_with(dino_genera[["opr"]]))),
+    .keep = "unused"
+  ) %>%
+  mutate(remainder = 100 - sum(c_across(-depth))) %>%
+  drop_na() %>%
+  pivot_longer(-depth, names_to = "taxa", values_to = "percent")
 ```
 
 # Fig 4 - Area plot versus depth
 
 ``` r
-ggplot(data=tb_area, mapping=aes(x = depth , y = percent, fill = taxa)) +
+ggplot(data = tb_area, mapping = aes(x = depth, y = percent, fill = taxa)) +
   geom_area(position = "stack", orientation = "x") +
-  scale_y_continuous(expand = c(0,0)) +
-  scale_x_continuous(limits=c(80,420),breaks=seq(75,420,25),expand = c(0,0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(breaks = seq(75, 420, 25), expand = c(0, 0)) +
   labs(
     fill = "",
     y = "%",
     x = "Depth (mbsf)"
   ) +
-  theme_classic()+
-  scale_fill_brewer(palette="Spectral")+
-  theme(axis.title=element_text(size=12,colour="black"),
-        axis.text=element_text(size=12,colour="black"),
-        axis.ticks=element_line(colour="black"),
-        legend.position="bottom")
+  coord_cartesian(xlim = c(80, 420), ylim = c(0, 100)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Spectral") +
+  theme(
+    axis.title = element_text(size = 12, colour = "black"),
+    axis.text = element_text(size = 12, colour = "black"),
+    axis.ticks = element_line(colour = "black"),
+    legend.position = "bottom"
+  )
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
@@ -160,54 +166,57 @@ combine by P1+P2+P3 using the “patchwork” package. The figure is saved
 as an pdf using “ggsave”.
 
 ``` r
-#horizontaL plotting
-P1<-ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
-  geom_point(colour="red")+
-  geom_line(linetype=2)+
-  geom_ribbon(mapping=aes(ymin=(TEX-0.06),ymax=(TEX+0.06)), width=10,alpha=0.25,fill="blue")+
-  labs(x="Depth (mbsf)", y=expression(TEX[86]))+
-  scale_x_continuous(position="top",limits=c(80,420),breaks=seq(75,420,25))+
-  scale_y_continuous(limits=c(0.2,0.8))+
-  theme_classic()+
-  theme(axis.title=element_text(size=12,colour="black"),
-        axis.text=element_text(size=12,colour="black"),
-        axis.ticks=element_line(colour="black"))
+P1 <- ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
+  geom_point(colour = "red") +
+  geom_line(linetype = 2) +
+  geom_ribbon(mapping = aes(ymin = (TEX - 0.06), ymax = (TEX + 0.06)), width = 10, alpha = 0.25, fill = "blue") +
+  labs(x = "Depth (mbsf)", y = expression(TEX[86])) +
+  scale_x_continuous(position = "top", breaks = seq(75, 420, 25)) +
+  coord_cartesian(xlim = c(80, 420), ylim = c(0, 0.8)) +
+  theme_classic() +
+  theme(
+    axis.title = element_text(size = 12, colour = "black"),
+    axis.text = element_text(size = 12, colour = "black"),
+    axis.ticks = element_line(colour = "black")
+  )
 
-P2<-ggplot(data=TEX)+
-  geom_line(mapping=aes(x=`Depth mbsf`,y=`Methan index`),colour="blue")+
-  geom_line(mapping=aes(x=`Depth mbsf`,y=`GDGT2/GDGT3`),colour="red")+
-  labs(x="Depth (mbsf)", y="Methane Index")+
-  scale_x_continuous(limits=c(80,420),breaks=seq(75,420,25))+
-  scale_y_continuous(limits=c(0,1),sec.axis=sec_axis(~.*2,name="GDGT2/GDGT3"))+
-  theme_classic()+
-  theme(axis.title.y.left  =element_text(size=12,colour="red"),
-        axis.text.y.left= element_text(size=12,colour="red"),
-        axis.title.y.right =element_text(size=12,colour="blue"),
-        axis.text.y.right=element_text(size=12,colour="blue"),
-        axis.ticks.y=element_line(colour="black"),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.line.x=element_blank(),
-        axis.title.x=element_blank())
+P2 <- ggplot(data = TEX) +
+  geom_line(mapping = aes(x = `Depth mbsf`, y = `Methan index`), colour = "blue") +
+  labs(x = "Depth (mbsf)", y = "Methane Index") +
+  scale_x_continuous(breaks = seq(75, 420, 25)) +
+  coord_cartesian(xlim = c(80, 420)) +
+  theme_classic() +
+  theme(
+    axis.title.y = element_text(size = 12, colour = "black"),
+    axis.text.y = element_text(size = 12, colour = "black"),
+    axis.ticks.y = element_line(colour = "black"),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.line.x = element_blank(),
+    axis.title.x = element_blank()
+  )
 
-P3<-ggplot(data=tb_area, mapping=aes(x = depth , y = percent, fill = taxa)) +
+P3 <- ggplot(data = tb_area, mapping = aes(x = depth, y = percent, fill = taxa)) +
   geom_area(position = "stack", orientation = "x") +
-  geom_segment(alpha=0.1,aes(y=100,xend = depth, yend=0))+
-  scale_y_continuous(expand = c(0,0)) +
-  scale_x_continuous(limits=c(80,420),breaks=seq(75,420,25),expand = c(0,0)) +
+  geom_segment(alpha = 0.1, aes(y = 100, xend = depth, yend = 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(breaks = seq(75, 420, 25), expand = c(0, 0)) +
+  coord_cartesian(xlim = c(80, 420), ylim = c(0, 100)) +
   labs(
     fill = "",
     y = "%",
     x = "Depth (mbsf)"
   ) +
-  theme_classic()+
-  scale_fill_brewer(palette="Spectral")+
-  theme(axis.title=element_text(size=12,colour="black"),
-        axis.text=element_text(size=12,colour="black"),
-        axis.ticks=element_line(colour="black"),
-        legend.position="bottom")
+  theme_classic() +
+  scale_fill_brewer(palette = "Spectral") +
+  theme(
+    axis.title = element_text(size = 12, colour = "black"),
+    axis.text = element_text(size = 12, colour = "black"),
+    axis.ticks = element_line(colour = "black"),
+    legend.position = "bottom"
+  )
 
-P1+P2+P3+plot_layout(nrow=3)
+P1 + P2 + P3 + plot_layout(nrow = 3)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
@@ -225,62 +234,63 @@ trans=“reverse” we reverse the vertical axis, so that depth increases
 downwards.
 
 ``` r
-#vertical plotting
-P1<-ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
-  geom_point(colour="red")+
-  geom_line(linetype=2)+
-  geom_ribbon(mapping=aes(ymin=(TEX-0.06),ymax=(TEX+0.06)), width=10,alpha=0.25,fill="blue")+
-  coord_flip()+
-  labs(x="Depth (mbsf)", y=expression(TEX[86]))+
-  scale_x_continuous(trans="reverse",limits=c(420,80),breaks=seq(420,80,-25))+
-  scale_y_continuous(limits=c(0.2,0.8))+
-  theme_classic()+
-  theme(axis.title=element_text(size=10,colour="black"),
-        axis.text=element_text(size=10,colour="black"),
-        axis.ticks=element_line(colour="black"))
+# vertical plotting
+P1 <- ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
+  geom_point(colour = "red") +
+  geom_line(linetype = 2) +
+  geom_ribbon(mapping = aes(ymin = (TEX - 0.06), ymax = (TEX + 0.06)), width = 10, alpha = 0.25, fill = "blue") +
+  coord_flip(xlim = c(420, 80), ylim = c(0.2, 0.8)) +
+  labs(x = "Depth (mbsf)", y = expression(TEX[86])) +
+  scale_x_continuous(trans = "reverse", breaks = seq(420, 80, -25)) +
+  theme_classic() +
+  theme(
+    axis.title = element_text(size = 10, colour = "black"),
+    axis.text = element_text(size = 10, colour = "black"),
+    axis.ticks = element_line(colour = "black")
+  )
 
-P2<-ggplot(data=TEX)+
-  geom_line(mapping=aes(x=`Depth mbsf`,y=`Methan index`),colour="blue")+
-  geom_line(mapping=aes(x=`Depth mbsf`,y=`GDGT2/GDGT3`),colour="red")+
-  coord_flip()+
-  labs(x="Depth (mbsf)", y="Methane Index")+
- scale_x_continuous(trans="reverse",limits=c(420,80),breaks=seq(420,80,-25))+
-  scale_y_continuous(limits=c(0,1),sec.axis=sec_axis(~.*2,name="GDGT2/GDGT3"))+
-  theme_classic()+
-  theme(axis.title.x.bottom =element_text(size=10,colour="red"),
-        axis.text.x.bottom= element_text(size=10,colour="red"),
-        axis.title.x.top =element_text(size=10,colour="blue"),
-        axis.text.x.top=element_text(size=10,colour="blue"),
-        axis.ticks.x=element_line(colour="black"),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        axis.line.y=element_blank(),
-        axis.title.y=element_blank())
+P2 <- ggplot(data = TEX) +
+  geom_line(mapping = aes(x = `Depth mbsf`, y = `Methan index`), colour = "blue") +
+  coord_flip(xlim = c(420, 80)) +
+  labs(x = "Depth (mbsf)", y = "Methane Index") +
+  scale_x_continuous(trans = "reverse", breaks = seq(420, 80, -25)) +
+  theme_classic() +
+  theme(
+    axis.title.x = element_text(size = 10, colour = "black"),
+    axis.text.x = element_text(size = 10, colour = "black"),
+    axis.ticks.x = element_line(colour = "black"),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.y = element_blank(),
+    axis.title.y = element_blank()
+  )
 
-P3<-ggplot(data=tb_area, mapping=aes(x = depth , y = percent, fill = taxa)) +
+P3 <- ggplot(data = tb_area, mapping = aes(x = depth, y = percent, fill = taxa)) +
   geom_area(position = "stack", orientation = "x") +
-  geom_segment(alpha=0.1,aes(y=100,xend = depth, yend=0))+
-  coord_flip()+
-  scale_y_continuous(expand = c(0,0)) +
-  scale_x_continuous(trans="reverse",limits=c(420,80),breaks=seq(420,80,-25))+
+  geom_segment(alpha = 0.1, aes(y = 100, xend = depth, yend = 0)) +
+  coord_flip(xlim = c(420, 80), ylim = c(0, 100)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(trans = "reverse", breaks = seq(420, 80, -25)) +
   labs(
     fill = "",
     y = "%",
     x = "Depth (mbsf)"
   ) +
-  theme_classic()+
-  scale_fill_brewer(palette="Spectral")+
-  theme(axis.title.x=element_text(size=10,colour="black"),
-        axis.text.x=element_text(size=10,colour="black"),
-        axis.ticks.x=element_line(colour="black"),
-        axis.title.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.line.y=element_blank(),
-        legend.position="right",
-        legend.text = element_text(size=8,colour="black"))
+  theme_classic() +
+  scale_fill_brewer(palette = "Spectral") +
+  theme(
+    axis.title.x = element_text(size = 10, colour = "black"),
+    axis.text.x = element_text(size = 10, colour = "black"),
+    axis.ticks.x = element_line(colour = "black"),
+    axis.title.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.line.y = element_blank(),
+    legend.position = "right",
+    legend.text = element_text(size = 8, colour = "black")
+  )
 
-P1+P2+P3+plot_layout(ncol=3)
+P1 + P2 + P3 + plot_layout(ncol = 3)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
