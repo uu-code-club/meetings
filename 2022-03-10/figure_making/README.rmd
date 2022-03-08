@@ -130,8 +130,8 @@ tb_area <- Dino %>%
   drop_na() %>%
   pivot_longer(-depth, names_to = "taxa", values_to = "percent")
 
-# let's have a look at what this looks like:
-head(tb_area)
+# let's have a look at what this looks like: (the conversion is just for github so it looks better)
+head(as.data.frame(tb_area))
 ```
 
 # Fig  4 - Area plot versus depth

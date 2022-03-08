@@ -133,17 +133,15 @@ tb_area <- Dino %>%
   drop_na() %>%
   pivot_longer(-depth, names_to = "taxa", values_to = "percent")
 
-# let's have a look at what this looks like:
-head(tb_area)
-#> [90m# A tibble: 6 × 3[39m
-#>   depth taxa                          percent
-#>   [3m[90m<dbl>[39m[23m [3m[90m<chr>[39m[23m                           [3m[90m<dbl>[39m[23m
-#> [90m1[39m  95.6 Selenopemphix antarctica         37.8
-#> [90m2[39m  95.6 Nematosphaeropsis labyrinthus     0  
-#> [90m3[39m  95.6 Impagidinium tot                 20  
-#> [90m4[39m  95.6 Operculodinium                    2.2
-#> [90m5[39m  95.6 remainder                        40  
-#> [90m6[39m 107.  Selenopemphix antarctica         14.5
+# let's have a look at what this looks like: (the conversion is just for github so it looks better)
+head(as.data.frame(tb_area))
+#>    depth                          taxa percent
+#> 1  95.61      Selenopemphix antarctica    37.8
+#> 2  95.61 Nematosphaeropsis labyrinthus     0.0
+#> 3  95.61              Impagidinium tot    20.0
+#> 4  95.61                Operculodinium     2.2
+#> 5  95.61                     remainder    40.0
+#> 6 106.61      Selenopemphix antarctica    14.5
 ```
 
 # Fig 4 - Area plot versus depth
