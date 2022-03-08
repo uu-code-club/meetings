@@ -319,5 +319,4 @@ ggplot() +
        subtitle = delta^{13} * C ~ "(\u2030 VPDB)",
        x = TEX[86] ~ "(-)", y = "Temperature (°C)") +
   annotate(geom = "text", x = 1, y = 1, label = Uk[37]^{"'"} ~ "(-)")
-  # what else can you think of?
 ```

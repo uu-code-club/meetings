@@ -357,7 +357,3 @@ ggplot() +
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
-
-``` r
-  # what else can you think of?
-```
