@@ -1,45 +1,37 @@
----
-title: "Meeting notes"
-output: github_document
-date: '2022-03-04'
----
+Meeting notes
+================
+2022-03-04
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include=FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
+In this meeting / workshop, we explain how to make a figure of combined
+geochemical and dinocyst assemblage data, against depth. The used data
+is retrieved from:
 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T,warning = F,message=F)
-```
-
-In this meeting / workshop, we explain how to make a figure of combined geochemical and dinocyst assemblage data, against depth. The used data is retrieved from:
-
-Sangiorgi, F., Bijl, P.K., Passchier, S. et al. Southern Ocean warming and Wilkes Land ice sheet retreat during the mid-Miocene. Nat Commun 9, 317 (2018). https://doi.org/10.1038/s41467-017-02609-7
-
+Sangiorgi, F., Bijl, P.K., Passchier, S. et al. Southern Ocean warming
+and Wilkes Land ice sheet retreat during the mid-Miocene. Nat Commun 9,
+317 (2018). <https://doi.org/10.1038/s41467-017-02609-7>
 
 # Load packages
-```{r}
+
+``` r
 library(tidyverse)
 library(ggplot2)
 library(patchwork)
 library(readr)
 ```
+
 # Load datasets
 
-```{r}
+``` r
 # read data files
 TEX <- read_csv("https://raw.githubusercontent.com/uu-code-club/meetings/master/2022-03-10/figure_making/Sangiorgi_TEX.csv")
 Dino <- read_csv("https://raw.githubusercontent.com/uu-code-club/meetings/master/2022-03-10/figure_making/Sangiorgi_dino.csv")
-
 ```
+
 # Fig 1 - TEX86 versus depth
-```{r}
+
+``` r
 #TEX is loaded as dataset and the depth column is mapped to the x-axis, and TEX to the y-axis
 ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
       #the first geometry, a simple red point per measurement is added
@@ -59,8 +51,11 @@ ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
   theme_classic()
 ```
 
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
 # Fig 2 - TEX86 versus depth (+BIT & annotation)
-```{r}
+
+``` r
 #TEX is loaded as dataset and the depth column is mapped to the x-axis, and TEX to the y-axis
 ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
       #we add a point geometry, but change the aestetic mapping, so that the color of the point corresponds to the BIT index (another column within the TEX dataset)
@@ -84,8 +79,11 @@ ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
   annotate("rect",xmin=300,xmax=350,ymin=0.56,ymax=0.6,alpha=.2)
 ```
 
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
 # Fig 3 - Methane index & GDGT2/3 versus depth
-```{r}
+
+``` r
 ggplot(data=TEX)+
   geom_line(mapping=aes(x=`Depth mbsf`,y=`Methan index`),colour="blue")+
   geom_line(mapping=aes(x=`Depth mbsf`,y=`GDGT2/GDGT3`),colour="red")+
@@ -99,13 +97,18 @@ ggplot(data=TEX)+
         axis.ticks=element_line(colour="black"))
 ```
 
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
 # Data transformation for area plot
 
-To combine certain species of operculodinium and Impagidinium, the data has to be grouped.
-Then, the remainder is calculated.
+To combine certain species of operculodinium and Impagidinium, the data
+has to be grouped. Then, the remainder is calculated.
 
-Note the transformation of wide format (as the data was principally loaded into R) to long format using the "pivot_longer" function. This allows ggplot to plot the species/genera as a variable (fill / color)
-```{r}
+Note the transformation of wide format (as the data was principally
+loaded into R) to long format using the “pivot_longer” function. This
+allows ggplot to plot the species/genera as a variable (fill / color)
+
+``` r
 #get data in right order for area plot
 dino_species <- c("Selenopemphix antarctica", "Nematosphaeropsis labyrinthus")
 dino_genera <- c(imp = "Impagidinium tot", opr = "Operculodinium")
@@ -128,8 +131,9 @@ tb_area <- Dino %>%
  pivot_longer(-depth, names_to = "taxa", values_to = "percent")
 ```
 
-# Fig  4 - Area plot versus depth
-```{r}
+# Fig 4 - Area plot versus depth
+
+``` r
 ggplot(data=tb_area, mapping=aes(x = depth , y = percent, fill = taxa)) +
   geom_area(position = "stack", orientation = "x") +
   scale_y_continuous(expand = c(0,0)) +
@@ -147,10 +151,15 @@ ggplot(data=tb_area, mapping=aes(x = depth , y = percent, fill = taxa)) +
         legend.position="bottom")
 ```
 
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
 # Fig 5 - Hor. combined plots 1,3,4
-We first store ggplots as variables (P1,P2,P#), which we then simply combine by P1+P2+P3 using the "patchwork" package.
-The figure is saved as an pdf using "ggsave".
-```{r}
+
+We first store ggplots as variables (P1,P2,P#), which we then simply
+combine by P1+P2+P3 using the “patchwork” package. The figure is saved
+as an pdf using “ggsave”.
+
+``` r
 #horizontaL plotting
 P1<-ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
   geom_point(colour="red")+
@@ -199,14 +208,23 @@ P3<-ggplot(data=tb_area, mapping=aes(x = depth , y = percent, fill = taxa)) +
         legend.position="bottom")
 
 P1+P2+P3+plot_layout(nrow=3)
+```
 
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+``` r
 ggsave("finalfigh.pdf")
 ```
 
 # Fig 6 - Vert. combined plots 1,3,4
-As for Fig  5, we first store ggplots as variables (P1,P2,P#), which we then simply combine by P1+P2+P3 using the "patchwork" package.
-By adding "coord_flip" to the ggplots, we swap the x and y axis. Then, by adding trans="reverse" we reverse the vertical axis, so that depth increases downwards.
-```{r}
+
+As for Fig 5, we first store ggplots as variables (P1,P2,P#), which we
+then simply combine by P1+P2+P3 using the “patchwork” package. By adding
+“coord_flip” to the ggplots, we swap the x and y axis. Then, by adding
+trans=“reverse” we reverse the vertical axis, so that depth increases
+downwards.
+
+``` r
 #vertical plotting
 P1<-ggplot(data=TEX,mapping=aes(x=`Depth mbsf`,y=`TEX`))+
   geom_point(colour="red")+
@@ -263,6 +281,10 @@ P3<-ggplot(data=tb_area, mapping=aes(x = depth , y = percent, fill = taxa)) +
         legend.text = element_text(size=8,colour="black"))
 
 P1+P2+P3+plot_layout(ncol=3)
+```
 
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+``` r
 ggsave("finalfigv.pdf")
 ```
