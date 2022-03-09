@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T, warning = F, message = F)
+knitr::opts_chunk$set(echo = T, warning = T, message = F)
 ```
 
 In this meeting / workshop, we explain how to make a figure of combined geochemical and dinocyst assemblage data, against depth. The used data is retrieved from:

@@ -51,6 +51,8 @@ ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
   coord_cartesian(xlim = c(80, 420), ylim = c(0.2, 0.8)) +
   # finally, to get rid of the standard grey background and other settings, we change the theme tot the "classic" preset
   theme_classic()
+#> Warning: Removed 4 rows containing missing values (geom_point).
+#> Warning: Removed 4 row(s) containing missing values (geom_path).
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
@@ -81,6 +83,8 @@ ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
   # an annotation is added using annotate. This can be both text or shapes
   annotate("text", x = 325, y = 0.58, label = "Peak BIT") +
   annotate("rect", xmin = 300, xmax = 350, ymin = 0.56, ymax = 0.6, alpha = .2)
+#> Warning: Removed 4 rows containing missing values (geom_point).
+#> Warning: Removed 4 row(s) containing missing values (geom_path).
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
@@ -98,6 +102,7 @@ ggplot(data = TEX) +
     axis.text = element_text(size = 12, colour = "black"),
     axis.ticks = element_line(colour = "black")
   )
+#> Warning: Removed 4 row(s) containing missing values (geom_path).
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
@@ -158,16 +163,14 @@ tb_area <- Dino %>%
 
 # let's have a look at what this looks like:
 # (the conversion is just for github so it looks better)
-head(tb_area)
-#> # A tibble: 6 × 3
-#>   depth taxa                          percent
-#>   <dbl> <chr>                           <dbl>
-#> 1  95.6 Selenopemphix antarctica         37.8
-#> 2  95.6 Nematosphaeropsis labyrinthus     0  
-#> 3  95.6 Impagidinium tot                 20  
-#> 4  95.6 Operculodinium                    2.2
-#> 5  95.6 remainder                        40  
-#> 6 107.  Selenopemphix antarctica         14.5
+head(as.data.frame(tb_area))
+#>    depth                          taxa percent
+#> 1  95.61      Selenopemphix antarctica    37.8
+#> 2  95.61 Nematosphaeropsis labyrinthus     0.0
+#> 3  95.61              Impagidinium tot    20.0
+#> 4  95.61                Operculodinium     2.2
+#> 5  95.61                     remainder    40.0
+#> 6 106.61      Selenopemphix antarctica    14.5
 ```
 
 # Fig 4 - Area plot versus depth
@@ -219,6 +222,7 @@ P1 <- ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
     axis.text = element_text(size = 12, colour = "black"),
     axis.ticks = element_line(colour = "black")
   )
+#> Warning: Ignoring unknown parameters: width
 
 P2 <- ggplot(data = TEX) +
   geom_line(mapping = aes(x = `Depth mbsf`, y = `Methan index`), colour = "blue") +
@@ -259,12 +263,18 @@ P3 <- ggplot(data = tb_area, mapping = aes(x = depth, y = percent, fill = taxa))
   )
 
 P1 + P2 + P3 + plot_layout(nrow = 3)
+#> Warning: Removed 4 rows containing missing values (geom_point).
+#> Warning: Removed 4 row(s) containing missing values (geom_path).
+#> Removed 4 row(s) containing missing values (geom_path).
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
 ggsave("finalfigh.pdf")
+#> Warning: Removed 4 rows containing missing values (geom_point).
+#> Removed 4 row(s) containing missing values (geom_path).
+#> Removed 4 row(s) containing missing values (geom_path).
 ```
 
 # Fig 6 - Vert. combined plots 1,3,4
@@ -290,6 +300,7 @@ P1 <- ggplot(data = TEX, mapping = aes(x = `Depth mbsf`, y = `TEX`)) +
     axis.text = element_text(size = 10, colour = "black"),
     axis.ticks = element_line(colour = "black")
   )
+#> Warning: Ignoring unknown parameters: width
 
 P2 <- ggplot(data = TEX) +
   geom_line(mapping = aes(x = `Depth mbsf`, y = `Methan index`), colour = "blue") +
@@ -333,12 +344,18 @@ P3 <- ggplot(data = tb_area, mapping = aes(x = depth, y = percent, fill = taxa))
   )
 
 P1 + P2 + P3 + plot_layout(ncol = 3)
+#> Warning: Removed 4 rows containing missing values (geom_point).
+#> Warning: Removed 4 row(s) containing missing values (geom_path).
+#> Removed 4 row(s) containing missing values (geom_path).
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 ggsave("finalfigv.pdf")
+#> Warning: Removed 4 rows containing missing values (geom_point).
+#> Removed 4 row(s) containing missing values (geom_path).
+#> Removed 4 row(s) containing missing values (geom_path).
 ```
 
 # Q&A
@@ -360,6 +377,7 @@ ggplot() +
        subtitle = delta^{13} * C ~ "(\u2030 VPDB)",
        x = TEX[86] ~ "(-)", y = "Temperature (°C)") +
   annotate(geom = "text", x = 1, y = 1, label = Uk[37]^{"'"} ~ "(-)")
+#> Warning in is.na(x): is.na() applied to non-(list or vector) of type 'language'
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
