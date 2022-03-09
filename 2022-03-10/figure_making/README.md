@@ -140,11 +140,9 @@ tb_area <- Dino %>%
   # unique for each row (sample ID) and then group_by(row_index)
   rowwise() %>%
   mutate(
-    # this is a fancy way of adding a new column, where we use a variable to
-    # determine the name of the new column. It's the same as saying:
-    # `Impagidinium tot` = sum(...).
-    !!dino_genera[["imp"]] := sum(c_across(starts_with(dino_genera[["imp"]]))),
-    !!dino_genera[["opr"]] := sum(c_across(starts_with(dino_genera[["opr"]]))),
+    # c_across ensures that multiple columns are aggregate before applying `sum()`
+    `Impagidinium tot` = sum(c_across(starts_with(dino_genera[["imp"]]))),
+    Operculodinium = sum(c_across(starts_with(dino_genera[["opr"]]))),
     # for more on this stuff, see
     # https://cran.r-project.org/web/packages/dplyr/vignettes/programming.html
     .keep = "unused"
@@ -160,14 +158,16 @@ tb_area <- Dino %>%
 
 # let's have a look at what this looks like:
 # (the conversion is just for github so it looks better)
-head(as.data.frame(tb_area))
-#>    depth                          taxa percent
-#> 1  95.61      Selenopemphix antarctica    37.8
-#> 2  95.61 Nematosphaeropsis labyrinthus     0.0
-#> 3  95.61              Impagidinium tot    20.0
-#> 4  95.61                Operculodinium     2.2
-#> 5  95.61                     remainder    40.0
-#> 6 106.61      Selenopemphix antarctica    14.5
+head(tb_area)
+#> # A tibble: 6 × 3
+#>   depth taxa                          percent
+#>   <dbl> <chr>                           <dbl>
+#> 1  95.6 Selenopemphix antarctica         37.8
+#> 2  95.6 Nematosphaeropsis labyrinthus     0  
+#> 3  95.6 Impagidinium tot                 20  
+#> 4  95.6 Operculodinium                    2.2
+#> 5  95.6 remainder                        40  
+#> 6 107.  Selenopemphix antarctica         14.5
 ```
 
 # Fig 4 - Area plot versus depth

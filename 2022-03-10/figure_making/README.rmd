@@ -135,11 +135,9 @@ tb_area <- Dino %>%
   # unique for each row (sample ID) and then group_by(row_index)
   rowwise() %>%
   mutate(
-    # this is a fancy way of adding a new column, where we use a variable to
-    # determine the name of the new column. It's the same as saying:
-    # `Impagidinium tot` = sum(...).
-    !!dino_genera[["imp"]] := sum(c_across(starts_with(dino_genera[["imp"]]))),
-    !!dino_genera[["opr"]] := sum(c_across(starts_with(dino_genera[["opr"]]))),
+    # c_across ensures that multiple columns are aggregate before applying `sum()`
+    `Impagidinium tot` = sum(c_across(starts_with(dino_genera[["imp"]]))),
+    Operculodinium = sum(c_across(starts_with(dino_genera[["opr"]]))),
     # for more on this stuff, see
     # https://cran.r-project.org/web/packages/dplyr/vignettes/programming.html
     .keep = "unused"
